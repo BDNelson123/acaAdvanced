@@ -18,7 +18,8 @@
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
         "symfony/dependency-injection": "^2.7",
-        "friendsofsymfony/oauth-server-bundle": "^1.4"
+        "friendsofsymfony/oauth-server-bundle": "^1.4",
+        "doctrine/doctrine-migrations-bundle": "^1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

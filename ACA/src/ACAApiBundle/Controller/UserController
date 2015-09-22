@@ -1,0 +1,17 @@
+<?php
+
+namespace ACAApiBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+class UserController extends Controller
+{
+    public function indexAction($name)
+    {
+        $response = new JsonResponse();
+        $response->setData(array(
+            'data' => 123
+        ));
+    }
+}
