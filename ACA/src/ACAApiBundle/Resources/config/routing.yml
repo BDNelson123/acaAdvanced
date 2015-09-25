@@ -1,3 +1,11 @@
-aca_api_homepage:
-    path:     /users
+route_index_user:
+    path:     /user
     defaults: { _controller: ACAApiBundle:User:index }
+
+route_show_user:
+    path:     /user/{slug}
+    defaults: { _controller: ACAApiBundle:User:show, slug: null }
+
+route_post_user:
+    path:    /user
+    defaults: { _controller: ACAApiBundle:User:post }
