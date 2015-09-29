@@ -10,6 +10,7 @@ class UserController extends Controller
 {
     public function indexAction()
     {
+
         /**
          * @var $db DBCommon
          */
@@ -34,13 +35,13 @@ class UserController extends Controller
          */
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
 
-        $db->setQuery('SELECT * FROM user WHERE id=' .$slug. ';');
+        $db->setQuery('SELECT * FROM user WHERE id = ' . $slug . ';');
         $db->query();
         $result = $db->loadObjectList();
 
         $response = new JsonResponse();
         $response->setData(array(
-            'user' => $result
+            'users' => $result
         ));
 
         return $response;
@@ -59,3 +60,5 @@ class UserController extends Controller
 
     }
 }
+
+

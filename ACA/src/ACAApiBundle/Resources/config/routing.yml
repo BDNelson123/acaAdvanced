@@ -5,7 +5,3 @@ route_index_user:
 route_show_user:
     path:     /user/{slug}
     defaults: { _controller: ACAApiBundle:User:show, slug: null }
-
-route_post_user:
-    path:    /user
-    defaults: { _controller: ACAApiBundle:User:post }
