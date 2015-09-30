@@ -5,17 +5,17 @@ namespace ACAApiBundle\Controller;
 use ACAApiBundle\DBCommon;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
 {
-    public function indexAction()
+    public function getAction()
     {
 
         /**
          * @var $db DBCommon
          */
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
-
         $db->setQuery('SELECT * FROM user;');
         $db->query();
         $result = $db->loadObjectList();
@@ -34,7 +34,6 @@ class UserController extends Controller
          * @var $db DBCommon
          */
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
-
         $db->setQuery('SELECT * FROM user WHERE id = ' . $slug . ';');
         $db->query();
         $result = $db->loadObjectList();
@@ -47,17 +46,22 @@ class UserController extends Controller
         return $response;
     }
 
-    public function postAction()
+    public function postAction(Request $request)
     {
-        $email = $_POST['email'];
-        $firstname = $_POST['firstname'];
-        $lastname = $_POST['lastname'];
+        $data = $request->request->all();
+        $email = $data['email'];
+        $firstname = $data['firstname'];
+        $lastname = $data['lastname'];
 
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
-
-        $db->setQuery('INSERT INTO user(email, firstname, lastname, role) VALUES("'. $email. '", "' .$firstname. '", "' .$lastname. '", "user");');
+        $db->setQuery('INSERT INTO user(email, firstname, lastname) VALUES("'.$email.'", "'.$firstname.'", "'.$lastname.'");');
         $db->query();
 
+        $response = new JsonResponse();
+        $response->setData(array(
+            'new record ID' => $db->getLastInsertId()
+        ));
+        return $response;
     }
 }
 
