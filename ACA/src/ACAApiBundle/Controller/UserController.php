@@ -68,7 +68,7 @@ class UserController extends Controller
      */
     public function postAction(Request $request)
     {
-        $data = $request->request->all();
+        $data = json_decode($request->getContent(), true);
         $email = $data['email'];
         $firstname = $data['firstname'];
         $lastname = $data['lastname'];
@@ -114,6 +114,12 @@ class UserController extends Controller
      * @throws \Exception
      */
     public function deleteAction($slug) {
+        // Wow, there's no authorization for this at all!
+
+        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db->setQuery('DELETE FROM user WHERE id='.$slug.';');
+        $db->query();
+
         $response = new JsonResponse();
         $response->setData(array(
             'special message' => 'ohnos u are abouttob2 winnuked'
