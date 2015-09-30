@@ -3,12 +3,22 @@
 namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\DBCommon;
+use ACAApiBundle\Model\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class UserController
+ * @package ACAApiBundle\Controller
+ *
+ */
 class UserController extends Controller
 {
+    /**
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function getAction()
     {
 
@@ -28,6 +38,11 @@ class UserController extends Controller
         return $response;
     }
 
+    /**
+     * @param $slug
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function showAction($slug)
     {
         /**
@@ -46,6 +61,11 @@ class UserController extends Controller
         return $response;
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function postAction(Request $request)
     {
         $data = $request->request->all();
@@ -63,6 +83,41 @@ class UserController extends Controller
         ));
         return $response;
     }
+
+    /**
+     * @param $slug
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function putAction($slug, Request $request) {
+
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'];
+        $firstname = $data['firstname'];
+        $lastname = $data['lastname'];
+
+        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db->setQuery('UPDATE user SET email="'.$email.'", firstname="'.$firstname.'", lastname="'.$lastname.'" WHERE id='.$slug.';');
+        $db->query();
+
+        $response = new JsonResponse();
+        $response->setData(array(
+            'request data' => $db->getQuery()
+        ));
+        return $response;
+    }
+
+    /**
+     * @param $slug
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function deleteAction($slug) {
+        $response = new JsonResponse();
+        $response->setData(array(
+            'special message' => 'ohnos u are abouttob2 winnuked'
+        ));
+        return $response;
+    }
 }
-
-
