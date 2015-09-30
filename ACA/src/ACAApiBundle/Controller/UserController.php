@@ -26,7 +26,7 @@ class UserController extends Controller
         /**
          * @var $db DBCommon
          */
-        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db = $this->get('db');
         $db->setQuery('SELECT lastname, firstname, email FROM user;');
         $db->query();
         $response = new JsonResponse();
@@ -44,7 +44,7 @@ class UserController extends Controller
         /**
          * @var $db DBCommon
          */
-        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db = $this->get('db');
         $db->setQuery('SELECT lastname, firstname, email FROM user WHERE id = ' . $slug . ';');
         $db->query();
         $response = new JsonResponse();
@@ -63,7 +63,7 @@ class UserController extends Controller
         $email = $data['email'];
         $firstname = $data['firstname'];
         $lastname = $data['lastname'];
-        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db = $this->get('db');
         $db->setQuery('INSERT INTO user(email, firstname, lastname) VALUES("'.$email.'", "'.$firstname.'", "'.$lastname.'");');
         $db->query();
         $response = new JsonResponse();
@@ -85,7 +85,7 @@ class UserController extends Controller
         $email = $data['email'];
         $firstname = $data['firstname'];
         $lastname = $data['lastname'];
-        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db = $this->get('db');
         $db->setQuery('UPDATE user SET email="'.$email.'", firstname="'.$firstname.'", lastname="'.$lastname.'" WHERE id='.$slug.';');
         $db->query();
         $response = new Response();
@@ -99,7 +99,7 @@ class UserController extends Controller
      * @throws \Exception
      */
     public function deleteAction($slug) {
-        $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
+        $db = $this->get('db');
         $db->setQuery('DELETE FROM user WHERE id='.$slug.';');
         $db->query();
         $response = new Response();
