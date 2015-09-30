@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class User
+class UserEntity
 {
     /**
      * @ORM\Id
@@ -41,4 +41,10 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     protected $authkey;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $password;
+
 }

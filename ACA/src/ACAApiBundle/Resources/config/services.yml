@@ -1,4 +1,4 @@
 services:
-#  db:
-#    class: ACAApiBundle/DBCommon.php
-#    arguments: ["%database_host%", "%database_user%", "%database_password%", "%database_name%", "%database_port%"]
+  db:
+    class: ACAApiBundle\DBCommon
+    arguments: ["%database_host%", "%database_user%", "%database_password%", "%database_name%", "%database_port%"]
