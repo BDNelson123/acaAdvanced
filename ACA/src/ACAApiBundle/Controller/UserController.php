@@ -27,7 +27,7 @@ class UserController extends Controller
          * @var $db DBCommon
          */
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
-        $db->setQuery('SELECT * FROM user;');
+        $db->setQuery('SELECT lastname, firstname, email FROM user;');
         $db->query();
         $response = new JsonResponse();
         $response->setData($db->loadObjectList());
@@ -45,7 +45,7 @@ class UserController extends Controller
          * @var $db DBCommon
          */
         $db = new DBCommon('127.0.0.1', 'root', 'root', 'acaAdvanced', 3306);
-        $db->setQuery('SELECT * FROM user WHERE id = ' . $slug . ';');
+        $db->setQuery('SELECT lastname, firstname, email FROM user WHERE id = ' . $slug . ';');
         $db->query();
         $response = new JsonResponse();
         $response->setData($db->loadObjectList());
