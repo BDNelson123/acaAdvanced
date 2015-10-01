@@ -2,7 +2,6 @@
 
 namespace ACAApiBundle\Controller;
 
-use ACAApiBundle\DBCommon;
 use ACAApiBundle\Model\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -70,6 +69,7 @@ class UserController extends Controller
               }
         } else {
             $response->setStatusCode(403)->setContent('Invalid submission');
+            // ... because the request didn't validate so $data is false
         }
         return $response;
     }
@@ -83,10 +83,7 @@ class UserController extends Controller
         $response = new Response();
         $data = User::validateRequest($request);
         if ($data) {
-            if ($this->get('rest_service')->put('user', $slug, array(
-                'firstname' => $data['firstname'],
-                'lastname' => $data['lastname'],
-                'email' => $data['email'] )))
+            if ($this->get('rest_service')->put('user', $slug, $data))
             {
                 $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
             } else {
