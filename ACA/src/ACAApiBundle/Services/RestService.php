@@ -7,6 +7,11 @@ use ACAApiBundle\Services\DBCommon;
 /**
  * Class RestService
  * @package ACAApiBundle\Services
+ *
+ * All methods return either a boolean representing success/failure or, in the event
+ * of a successful get, a standard object. Post and put expect an associative array
+ * in the $data parameter.
+ *
  */
 class RestService {
 

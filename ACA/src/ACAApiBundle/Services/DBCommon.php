@@ -8,7 +8,7 @@ use \stdClass as stdClass;
 /**
  * Class DBCommon contains functionality for us to interact with the database
  *
- * @package GameBundle\Game
+ * @package ACAApiBundle\Services
  */
 class DBCommon
 {
