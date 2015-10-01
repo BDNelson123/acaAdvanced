@@ -61,7 +61,8 @@ class UserController extends Controller
               if ($this->get('rest_service')->post('user', array(
                   'firstname' => $data['firstname'],
                   'lastname' => $data['lastname'],
-                  'email' => $data['email'] )))
+                  'email' => $data['email'],
+                  'role' => 'user' )))
               {
                   $response->setStatusCode(200)->setContent('Posted new record to /user');
               } else {
