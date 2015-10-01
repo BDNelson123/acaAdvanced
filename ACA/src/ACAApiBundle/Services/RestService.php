@@ -102,9 +102,10 @@ class RestService {
         $query = 'UPDATE ' . $tableName . ' SET ';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= $fieldname .'='. $fieldvalue;
+            $query .=  $fieldname .'="'. $fieldvalue . '",';
         }
-        $query = ' WHERE id=' . $recordId .';';
+        $query = rtrim($query, ',');
+        $query .= ' WHERE id=' . $recordId .';';
 
         // Query
         $this->db->setQuery($query);
