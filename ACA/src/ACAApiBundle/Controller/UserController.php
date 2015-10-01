@@ -17,12 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends Controller
 {
     /**
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response|JsonResponse
      */
     public function getAction()
     {
-        $data = $this->get('rest_service')->get(null);
+        $data = $this->get('rest_service')->get('user');
         if ($data) {
             $response = new JsonResponse();
             $response->setData($data);
@@ -35,26 +34,24 @@ class UserController extends Controller
 
     /**
      * @param $slug
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response|JsonResponse
      */
     public function showAction($slug)
     {
-        $data = $this->get('rest_service')->get($slug);
+        $data = $this->get('rest_service')->get('user', $slug);
         if ($data) {
             $response = new JsonResponse();
             $response->setData($data);
         } else {
             $response = new Response;
-            $response->setStatusCode(500)->setContent('Index request found no records');
+            $response->setStatusCode(500)->setContent('No record found');
         }
         return $response;
     }
 
     /**
      * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
     public function postAction(Request $request)
     {
@@ -64,7 +61,8 @@ class UserController extends Controller
               if ($this->get('rest_service')->post('user', array(
                   'firstname' => $data['firstname'],
                   'lastname' => $data['lastname'],
-                  'email' => $data['email'] ))) {
+                  'email' => $data['email'] )))
+              {
                   $response->setStatusCode(200)->setContent('Posted new record to /user');
               } else {
                   $response->setStatusCode(500)->setContent('Query failed');
@@ -78,8 +76,7 @@ class UserController extends Controller
     /**
      * @param $slug
      * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
     public function putAction($slug, Request $request) {
         $response = new Response();
@@ -103,8 +100,7 @@ class UserController extends Controller
 
     /**
      * @param $slug
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
     public function deleteAction($slug)
     {

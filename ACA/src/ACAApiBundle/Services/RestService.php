@@ -27,25 +27,24 @@ class RestService {
     }
 
     /**
-     * @param $id
+     * @param string $tableName
+     * @param null|integer $id
      * @return bool|null|\stdClass|\stdClass[]
      */
-    public function get($id) {
+    public function get($tableName, $id) {
         if ($id === null) {
-            $this->db->setQuery('SELECT lastname, firstname, email FROM user;');
+            $this->db->setQuery('SELECT * FROM ' .$tableName.';');
             $this->db->query();
-            $objectList = $this->db->loadObjectList();
-            if (!is_null($objectList)) {
-                return $objectList;
+            if ($this->db->getSqlstate() === '00000') {
+                return $this->db->loadObjectList();
             } else {
                 return false;
             }
         } else {
-            $this->db->setQuery('SELECT lastname, firstname, email FROM user WHERE id = ' . $id . ';');
+            $this->db->setQuery('SELECT * FROM ' .$tableName. ' WHERE id = ' . $id . ';');
             $this->db->query();
-            $object = $this->db->loadObject();
-            if (!is_null($object)) {
-                return $object;
+            if ($this->db->getSqlstate() === '00000') {
+                return $this->db->loadObject();
             } else {
                 return false;
             }
