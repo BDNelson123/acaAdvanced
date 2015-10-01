@@ -47,7 +47,7 @@ class BidController extends Controller
          * @var $db DBCommon
          */
         $db = $this->get('db');
-        $db->setQuery('SELECT userid, houseid, bidamount, biddate FROM user WHERE id = ' . $slug . ';');
+        $db->setQuery('SELECT userid, houseid, bidamount, biddate FROM bid WHERE id = ' . $slug . ';');
         $db->query();
         $response = new JsonResponse();
         $response->setData($db->loadObjectList());

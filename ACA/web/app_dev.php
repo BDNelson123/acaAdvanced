@@ -1,7 +1,5 @@
 <?php
 
-echo 'blah blah';
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
 
