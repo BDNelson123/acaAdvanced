@@ -1,6 +1,8 @@
 <?php
 
 namespace ACAApiBundle\Model;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class User
@@ -8,11 +10,32 @@ namespace ACAApiBundle\Model;
  */
 class User
 {
+    /**
+     * @var $id integer
+     */
     protected $id;
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
     protected $lastname;
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
     protected $firstname;
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
     protected $email;
+    /**
+     * @var string
+     */
     protected $role;
+    /**
+     * @var string
+     */
     protected $authkey;
 
     /**
@@ -100,5 +123,17 @@ class User
     public function setAuthkey($authkey)
     {
         $this->authkey = $authkey;
+    }
+
+    public static function validateRequest(Request $request) {
+        $data = json_decode($request->getContent(), true);
+
+        if (gettype($data) !== 'array') { return false; }
+
+        if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
+            return false;
+        } else {
+            return $data;
+        }
     }
 }

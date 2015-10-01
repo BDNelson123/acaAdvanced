@@ -46,5 +46,4 @@ class UserEntity
      * @ORM\Column(type="string", length=255)
      */
     protected $password;
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAApiBundle;
+namespace ACAApiBundle\Services;
 use \Exception as Exception;
 use \mysqli as mysqli;
 use \mysqli_result as mysqli_result;
@@ -143,5 +143,12 @@ class DBCommon
     public function getNumRows()
     {
         return $this->numRows;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSqlstate() {
+        return $this->mysqli->sqlstate;
     }
 }
