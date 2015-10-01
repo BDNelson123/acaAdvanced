@@ -36,7 +36,7 @@ class RestService {
      * @param null|integer $id
      * @return bool|null|\stdClass|\stdClass[]
      */
-    public function get($tableName, $id) {
+    public function get($tableName, $id = null) {
         if ($id === null) {
             $this->db->setQuery('SELECT * FROM ' .$tableName.';');
             $this->db->query();
