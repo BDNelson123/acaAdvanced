@@ -17,93 +17,100 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends Controller
 {
     /**
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response|JsonResponse
      */
     public function getAction()
     {
-
-        /**
-         * @var $db DBCommon
-         */
-        $db = $this->get('db');
-        $db->setQuery('SELECT lastname, firstname, email FROM user;');
-        $db->query();
-        $response = new JsonResponse();
-        $response->setData($db->loadObjectList());
+        $data = $this->get('rest_service')->get('user');
+        if ($data) {
+            $response = new JsonResponse();
+            $response->setData($data);
+        } else {
+            $response = new Response;
+            $response->setStatusCode(500)->setContent('Index request found no records');
+        }
         return $response;
     }
 
     /**
      * @param $slug
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response|JsonResponse
      */
     public function showAction($slug)
     {
-        /**
-         * @var $db DBCommon
-         */
-        $db = $this->get('db');
-        $db->setQuery('SELECT lastname, firstname, email FROM user WHERE id = ' . $slug . ';');
-        $db->query();
-        $response = new JsonResponse();
-        $response->setData($db->loadObjectList());
+        $data = $this->get('rest_service')->get('user', $slug);
+        if ($data) {
+            $response = new JsonResponse();
+            $response->setData($data);
+        } else {
+            $response = new Response;
+            $response->setStatusCode(500)->setContent('No record found');
+        }
         return $response;
     }
 
     /**
      * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
     public function postAction(Request $request)
     {
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'];
-        $firstname = $data['firstname'];
-        $lastname = $data['lastname'];
-        $db = $this->get('db');
-        $db->setQuery('INSERT INTO user(email, firstname, lastname) VALUES("'.$email.'", "'.$firstname.'", "'.$lastname.'");');
-        $db->query();
-        $response = new JsonResponse();
-        $response->setData(array(
-            'Inserted record with ID' => $db->getLastInsertId()
-        ));
+        $response = new Response;
+        $data = User::validateRequest($request);
+        if ($data) {
+              if ($this->get('rest_service')->post('user', array(
+                  'firstname' => $data['firstname'],
+                  'lastname' => $data['lastname'],
+                  'email' => $data['email'],
+                  'role' => 'user' )))
+              {
+                  $response->setStatusCode(200)->setContent('Posted new record to /user');
+              } else {
+                  $response->setStatusCode(500)->setContent('Query failed');
+              }
+        } else {
+            $response->setStatusCode(403)->setContent('Invalid submission');
+        }
         return $response;
     }
 
     /**
      * @param $slug
      * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
     public function putAction($slug, Request $request) {
-
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'];
-        $firstname = $data['firstname'];
-        $lastname = $data['lastname'];
-        $db = $this->get('db');
-        $db->setQuery('UPDATE user SET email="'.$email.'", firstname="'.$firstname.'", lastname="'.$lastname.'" WHERE id='.$slug.';');
-        $db->query();
         $response = new Response();
-        $response->setStatusCode(200);
+        $data = User::validateRequest($request);
+        if ($data) {
+            if ($this->get('rest_service')->put('user', $slug, array(
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'email' => $data['email'] )))
+            {
+                $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
+            } else {
+                $response->setStatusCode(500)->setContent('Query failed');
+            }
+        } else {
+            $response->setStatusCode(403)->setContent('Invalid submission');
+            // ... because the data in the request didn't validate
+        }
         return $response;
     }
 
     /**
      * @param $slug
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
      */
-    public function deleteAction($slug) {
-        $db = $this->get('db');
-        $db->setQuery('DELETE FROM user WHERE id='.$slug.';');
-        $db->query();
+    public function deleteAction($slug)
+    {
         $response = new Response();
-        $response->setStatusCode(200);
+        if ($this->get('rest_service')->delete('user', $slug)) {
+            $response->setStatusCode(200)->setContent('Successfully deleted record ' . $slug);
+        } else {
+            $response->setStatusCode(500)->setContent('Query failed');
+        }
         return $response;
     }
 }
