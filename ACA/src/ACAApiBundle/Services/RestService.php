@@ -4,10 +4,14 @@ namespace ACAApiBundle\Services;
 
 use ACAApiBundle\Services\DBCommon;
 
+/**
+ * Class RestService
+ * @package ACAApiBundle\Services
+ */
 class RestService {
 
     /**
-     * @var DBCommon
+     * @var \ACAApiBundle\Services\DBCommon $db
      */
     protected $db;
 
@@ -16,9 +20,16 @@ class RestService {
      */
     public function setDb($db)
     {
+        /**
+         *
+         */
         $this->db = $db;
     }
 
+    /**
+     * @param $id
+     * @return bool|null|\stdClass|\stdClass[]
+     */
     public function get($id) {
         if ($id === null) {
             $this->db->setQuery('SELECT lastname, firstname, email FROM user;');
@@ -41,6 +52,11 @@ class RestService {
         }
     }
 
+    /**
+     * @param string $tableName
+     * @param array $data
+     * @return bool
+     */
     public function post($tableName, $data) {
         // Construct a query string
         // Expects an associative array
@@ -67,9 +83,15 @@ class RestService {
             return true;
         } else {
             return false;
-        };
+        }
     }
 
+    /**
+     * @param string $tableName
+     * @param integer $recordId
+     * @param array $data
+     * @return bool
+     */
     public function put($tableName, $recordId, $data) {
         // Build a query string
         // Expects an associative array
@@ -89,17 +111,23 @@ class RestService {
             return true;
         } else {
             return false;
-        };
+        }
     }
 
+    /**
+     * @param string $tableName
+     * @param integer $recordId
+     * @return bool
+     */
     public function delete($tableName, $recordId) {
         $this->db->setQuery('DELETE FROM ' .$tableName. ' WHERE id=' .$recordId. ';');
         $this->db->query();
+
         // If the query was successful, return true
         if ($this->db->getSqlstate() === '00000') {
             return true;
         } else {
             return false;
-        };
+        }
     }
 }

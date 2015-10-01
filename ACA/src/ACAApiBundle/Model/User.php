@@ -125,6 +125,11 @@ class User
         $this->authkey = $authkey;
     }
 
+    /**
+     * If the Request is a json representing a valid User, function outputs the contents as an associative array
+     * @param Request $request
+     * @return bool|array
+     */
     public static function validateRequest(Request $request) {
         $data = json_decode($request->getContent(), true);
 

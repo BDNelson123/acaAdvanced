@@ -61,8 +61,7 @@ class UserController extends Controller
         $response = new Response;
         $data = User::validateRequest($request);
         if ($data) {
-              $rest = $this->get('rest_service');
-              if ($rest->post('user', array(
+              if ($this->get('rest_service')->post('user', array(
                   'firstname' => $data['firstname'],
                   'lastname' => $data['lastname'],
                   'email' => $data['email'] ))) {
@@ -86,8 +85,7 @@ class UserController extends Controller
         $response = new Response();
         $data = User::validateRequest($request);
         if ($data) {
-            $rest = $this->get('rest_service');
-            if ($rest->put('user', $slug, array(
+            if ($this->get('rest_service')->put('user', $slug, array(
                 'firstname' => $data['firstname'],
                 'lastname' => $data['lastname'],
                 'email' => $data['email'] )))
