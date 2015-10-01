@@ -33,10 +33,6 @@ class User
      * @var string
      */
     protected $role;
-    /**
-     * @var string
-     */
-    protected $authkey;
 
     /**
      * @param $id
@@ -107,22 +103,6 @@ class User
     public function setRole($role)
     {
         $this->role = $role;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAuthkey()
-    {
-        return $this->authkey;
-    }
-
-    /**
-     * @param mixed $authkey
-     */
-    public function setAuthkey($authkey)
-    {
-        $this->authkey = $authkey;
     }
 
     /**

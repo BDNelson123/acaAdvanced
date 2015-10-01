@@ -36,14 +36,4 @@ class UserEntity
      * @ORM\Column(type="string", length=255)
      */
     protected $role;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $authkey;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $password;
 }
