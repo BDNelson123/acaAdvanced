@@ -27,3 +27,33 @@ route_delete_user:
     defaults: { _controller: ACAApiBundle:User:delete, slug: null }
     requirements:
         _method: 'DELETE'
+
+route_get_bid:
+    path:     /bid
+    defaults: { _controller: ACAApiBundle:Bid:get }
+    requirements:
+        _method: 'GET'
+
+route_post_bid:
+    path:     /bid
+    defaults: { _controller: ACAApiBundle:Bid:post }
+    requirements:
+        _method: 'POST'
+
+route_show_bid:
+    path:     /bid/{slug}
+    defaults: { _controller: ACAApiBundle:Bid:show, slug: null }
+    requirements:
+        _method: 'GET'
+
+route_put_bid:
+    path:     /bid/{slug}
+    defaults: { _controller: ACAApiBundle:Bid:put, slug: null }
+    requirements:
+        _method: 'PUT'
+
+route_delete_bid:
+    path:     /bid/{slug}
+    defaults: { _controller: ACAApiBundle:bid:delete, slug: null }
+    requirements:
+        _method: 'DELETE'
