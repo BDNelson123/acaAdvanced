@@ -26,7 +26,7 @@ class RestService {
     public function setDb($db)
     {
         /**
-         *
+         * @var DBCommon $db
          */
         $this->db = $db;
     }
@@ -58,7 +58,7 @@ class RestService {
 
     /**
      * @param string $tableName
-     * @param array $data Expects an associative array
+     * @param array $data $data Expects an associative array, e.g. json_decode({$request->getContent()}, true)
      * @return bool
      */
     public function post($tableName, $data) {
@@ -93,7 +93,7 @@ class RestService {
     /**
      * @param string $tableName
      * @param integer $recordId
-     * @param array $data Expects an associative array
+     * @param array $data Expects an associative array, e.g. json_decode({$request->getContent()}, true)
      * @return bool
      */
     public function put($tableName, $recordId, $data) {
