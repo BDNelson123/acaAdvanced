@@ -58,7 +58,7 @@ class RestService {
 
     /**
      * @param string $tableName
-     * @param array $data
+     * @param array $data Expects an associative array
      * @return bool
      */
     public function post($tableName, $data) {
@@ -67,13 +67,13 @@ class RestService {
         $query = 'INSERT INTO ' . $tableName . '(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= $fieldname .',';
+            $query .= str_replace(array(',','\\',';'), '', $fieldname) .',';
         }
         $query = rtrim($query, ',');
         $query .= ') values(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= '"' . $fieldvalue .'",';
+            $query .= '"' . str_replace(array(',','\\',';'), '', $fieldvalue) .'",';
         }
         $query = rtrim($query, ',');
         $query .= ');';
@@ -93,7 +93,7 @@ class RestService {
     /**
      * @param string $tableName
      * @param integer $recordId
-     * @param array $data
+     * @param array $data Expects an associative array
      * @return bool
      */
     public function put($tableName, $recordId, $data) {
@@ -102,7 +102,7 @@ class RestService {
         $query = 'UPDATE ' . $tableName . ' SET ';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .=  $fieldname .'="'. $fieldvalue . '",';
+            $query .=  str_replace(array(',','\\',';'), '', $fieldname) .'="'. str_replace(array(',','\\',';'), '', $fieldvalue) . '",';
         }
         $query = rtrim($query, ',');
         $query .= ' WHERE id=' . $recordId .';';
@@ -122,6 +122,7 @@ class RestService {
     /**
      * @param string $tableName
      * @param integer $recordId
+     *
      * @return bool
      */
     public function delete($tableName, $recordId) {
