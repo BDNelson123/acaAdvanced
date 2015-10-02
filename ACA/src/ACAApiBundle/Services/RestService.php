@@ -122,6 +122,7 @@ class RestService {
     /**
      * @param string $tableName
      * @param integer $recordId
+     *
      * @return bool
      */
     public function delete($tableName, $recordId) {
