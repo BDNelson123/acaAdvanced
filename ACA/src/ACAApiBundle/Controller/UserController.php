@@ -57,18 +57,15 @@ class UserController extends Controller
         $response = new Response;
         $data = User::validateRequest($request);
         if ($data) {
-              if ($this->get('rest_service')->post('user', array(
-                  'firstname' => $data['firstname'],
-                  'lastname' => $data['lastname'],
-                  'email' => $data['email'],
-                  'role' => 'user' )))
+              if ($this->get('rest_service')->post('user', $data))
               {
                   $response->setStatusCode(200)->setContent('Posted new record to /user');
               } else {
-                  $response->setStatusCode(500)->setContent('Query failed'); // ... whoops, malformed SQL
+                  $response->setStatusCode(500)->setContent('Query failed');
+                                                                // ... whoops, bad SQL query
               }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid submission');
+            $response->setStatusCode(403)->setContent('Invalid request; expected Json with fields "firstname", "lastname", "email"');
             // ... the request didn't validate so $data was false
         }
         return $response;
@@ -90,8 +87,7 @@ class UserController extends Controller
                 $response->setStatusCode(500)->setContent('Query failed');
             }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid submission');
-            // ... because the request didn't validate
+            $response->setStatusCode(403)->setContent('Invalid request; expected Json with fields "firstname", "lastname", "email"');
         }
         return $response;
     }
