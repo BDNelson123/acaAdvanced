@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAApiBundle;
+namespace ACAApiBundle\Services;
 use \Exception as Exception;
 use \mysqli as mysqli;
 use \mysqli_result as mysqli_result;
@@ -8,7 +8,7 @@ use \stdClass as stdClass;
 /**
  * Class DBCommon contains functionality for us to interact with the database
  *
- * @package GameBundle\Game
+ * @package ACAApiBundle\Services
  */
 class DBCommon
 {
@@ -143,5 +143,12 @@ class DBCommon
     public function getNumRows()
     {
         return $this->numRows;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSqlstate() {
+        return $this->mysqli->sqlstate;
     }
 }
