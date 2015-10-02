@@ -27,3 +27,33 @@ route_delete_user:
     defaults: { _controller: ACAApiBundle:User:delete, slug: null }
     requirements:
         _method: 'DELETE'
+
+route_get_house:
+    path:     /house
+    defaults: { _controller: ACAApiBundle:House:get }
+    requirements:
+        _method: 'GET'
+
+route_post_house:
+    path:     /house
+    defaults: { _controller: ACAApiBundle:House:post }
+    requirements:
+        _method: 'POST'
+
+route_show_house:
+    path:     /house/{slug}
+    defaults: { _controller: ACAApiBundle:House:show, slug: null }
+    requirements:
+        _method: 'GET'
+
+route_put_house:
+    path:     /house/{slug}
+    defaults: { _controller: ACAApiBundle:House:put, slug: null }
+    requirements:
+        _method: 'PUT'
+
+route_delete_house:
+    path:     /house/{slug}
+    defaults: { _controller: ACAApiBundle:House:delete, slug: null }
+    requirements:
+        _method: 'DELETE'
