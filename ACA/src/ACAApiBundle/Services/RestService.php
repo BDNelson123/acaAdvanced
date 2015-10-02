@@ -2,8 +2,6 @@
 
 namespace ACAApiBundle\Services;
 
-use ACAApiBundle\Services\DBCommon;
-
 /**
  * Class RestService
  * @package ACAApiBundle\Services
@@ -67,13 +65,13 @@ class RestService {
         $query = 'INSERT INTO ' . $tableName . '(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= $fieldname .',';
+            $query .= str_replace(array(',','\\',';'), '', $fieldname) .',';
         }
         $query = rtrim($query, ',');
         $query .= ') values(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= '"' . $fieldvalue .'",';
+            $query .= '"' . str_replace(array(',','\\',';'), '', $fieldvalue) .'",';
         }
         $query = rtrim($query, ',');
         $query .= ');';
@@ -102,7 +100,7 @@ class RestService {
         $query = 'UPDATE ' . $tableName . ' SET ';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .=  $fieldname .'="'. $fieldvalue . '",';
+            $query .=  str_replace(array(',','\\',';'), '', $fieldname) .'="'. str_replace(array(',','\\',';'), '', $fieldvalue) . '",';
         }
         $query = rtrim($query, ',');
         $query .= ' WHERE id=' . $recordId .';';
