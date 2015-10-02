@@ -113,12 +113,20 @@ class User
     public static function validateRequest(Request $request) {
         $data = json_decode($request->getContent(), true);
 
+        // If the output of json_decode is not an array ...
         if (gettype($data) !== 'array') { return false; }
 
+        // If it's missing needed fields ...
         if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
             return false;
-        } else {
-            return $data;
         }
+
+        // If the email isn't a valid email ...
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        // Passed all checks, return the contents of the request
+        return $data;
     }
 }

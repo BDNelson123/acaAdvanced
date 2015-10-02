@@ -65,11 +65,11 @@ class UserController extends Controller
               {
                   $response->setStatusCode(200)->setContent('Posted new record to /user');
               } else {
-                  $response->setStatusCode(500)->setContent('Query failed');
+                  $response->setStatusCode(500)->setContent('Query failed'); // ... whoops, malformed SQL
               }
         } else {
             $response->setStatusCode(403)->setContent('Invalid submission');
-            // ... because the request didn't validate so $data is false
+            // ... the request didn't validate so $data was false
         }
         return $response;
     }
@@ -91,7 +91,7 @@ class UserController extends Controller
             }
         } else {
             $response->setStatusCode(403)->setContent('Invalid submission');
-            // ... because the data in the request didn't validate
+            // ... because the request didn't validate
         }
         return $response;
     }

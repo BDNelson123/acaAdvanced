@@ -58,7 +58,7 @@ class RestService {
 
     /**
      * @param string $tableName
-     * @param array $data
+     * @param array $data Expects an associative array
      * @return bool
      */
     public function post($tableName, $data) {
@@ -93,7 +93,7 @@ class RestService {
     /**
      * @param string $tableName
      * @param integer $recordId
-     * @param array $data
+     * @param array $data Expects an associative array
      * @return bool
      */
     public function put($tableName, $recordId, $data) {
