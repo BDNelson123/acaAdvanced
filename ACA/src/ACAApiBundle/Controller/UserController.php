@@ -43,7 +43,7 @@ class UserController extends Controller
             $response->setData($data);
         } else {
             $response = new Response;
-            $response->setStatusCode(500)->setContent('No record found');
+            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
         }
         return $response;
     }
@@ -55,21 +55,16 @@ class UserController extends Controller
     public function postAction(Request $request)
     {
         $response = new Response;
-        $data = User::validateRequest($request);
+        $data = User::validatePost($request);
         if ($data) {
-              if ($this->get('rest_service')->post('user', array(
-                  'firstname' => $data['firstname'],
-                  'lastname' => $data['lastname'],
-                  'email' => $data['email'],
-                  'role' => 'user' )))
+              if ($this->get('rest_service')->post('user', $data))
               {
                   $response->setStatusCode(200)->setContent('Posted new record to /user');
               } else {
-                  $response->setStatusCode(500)->setContent('Query failed');
+                  $response->setStatusCode(500)->setContent('Query failed; please ensure fields contain valid data');
               }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid submission');
-            // ... because the request didn't validate so $data is false
+            $response->setStatusCode(403)->setContent('Invalid request, expected application/json. Required fields "firstname", "lastname", "email", valid fields "role". Email must be valid.');
         }
         return $response;
     }
@@ -81,17 +76,16 @@ class UserController extends Controller
      */
     public function putAction($slug, Request $request) {
         $response = new Response();
-        $data = User::validateRequest($request);
+        $data = User::validatePut($request);
         if ($data) {
             if ($this->get('rest_service')->put('user', $slug, $data))
             {
                 $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
             } else {
-                $response->setStatusCode(500)->setContent('Query failed');
+                $response->setStatusCode(500)->setContent('Query failed; please ensure fields contain valid data');
             }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid submission');
-            // ... because the data in the request didn't validate
+            $response->setStatusCode(403)->setContent('Invalid request, expected application/json. Valid fields "firstname", "lastname", "email", "role". Email must be valid.');
         }
         return $response;
     }
@@ -106,7 +100,7 @@ class UserController extends Controller
         if ($this->get('rest_service')->delete('user', $slug)) {
             $response->setStatusCode(200)->setContent('Successfully deleted record ' . $slug);
         } else {
-            $response->setStatusCode(500)->setContent('Query failed');
+            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
         }
         return $response;
     }

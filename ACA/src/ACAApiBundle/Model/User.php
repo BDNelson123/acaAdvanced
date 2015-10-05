@@ -106,19 +106,60 @@ class User
     }
 
     /**
-     * If the Request is a json representing a valid User, function outputs the contents as an associative array
+     * Validates a User with all required fields
      * @param Request $request
      * @return bool|array
      */
-    public static function validateRequest(Request $request) {
-        $data = json_decode($request->getContent(), true);
+    public static function validatePost(Request $request) {
+        $data = User::getDataFromRequest($request);
 
-        if (gettype($data) !== 'array') { return false; }
-
+        // If it's missing needed fields ...
         if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
             return false;
-        } else {
-            return $data;
         }
+
+        // If the email isn't a valid email ...
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validates a User with any valid field
+     * @param Request $request
+     * @return bool|array
+     */
+    public static function validatePut(Request $request) {
+        $data = User::getDataFromRequest($request);
+
+        // If it's missing needed fields ...
+        if (empty($data['email']) && empty($data['lastname']) &&
+                empty($data['firstname']) && empty($data['role'])) {
+            return false;
+        }
+
+        // If the email isn't a valid email ...
+        if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Gets an associative array out of a valid Json
+     * @param Request $request
+     * @return bool|array
+     */
+    private static function getDataFromRequest(Request $request) {
+        $data = json_decode($request->getContent(), true);
+
+        // If the output of json_decode is not an array ...
+        if (gettype($data) !== 'array') { return false; }
+
+        // Passed all checks, return the contents of the request
+        return $data;
     }
 }
