@@ -66,12 +66,12 @@ class HouseController extends Controller
         $zipcode = $data['zipcode'];
         $main_image = $data['main_image'];
         $bed_number = $data['bed_number'];
+        $bath_number = $data['bath_number'];
         $asking_price = $data['asking_price'];
         $extras = $data['extras'];
-        $bath_number = $data['bath_number'];
         $db = $this->get('db');
-        $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, asking_price, extras, bath_number)
-        VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$asking_price.'", "'.$extras.'", "'.$bath_number.'");');
+        $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras)
+        VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$bath_number.'", "'.$asking_price.'", "'.$extras.'");');
         $db->query();
         $response = new JsonResponse();
         $response->setData(array(
@@ -95,11 +95,11 @@ class HouseController extends Controller
         $zipcode = $data['zipcode'];
         $main_image = $data['main_image'];
         $bed_number = $data['bed_number'];
+        $bath_number = $data['bath_number'];
         $asking_price = $data['asking_price'];
         $extras = $data['extras'];
-        $bath_number = $data['bath_number'];
         $db = $this->get('db');
-        $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", main_image="'.$main_image.'", bed_number="'.$bed_number.'", asking_price="'.$asking_price.'", extras="'.$extras.'", bath_number="'.$bath_number.'" WHERE house_id='.$slug.';');
+        $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", main_image="'.$main_image.'", bed_number="'.$bed_number.'", bath_number="'.$bath_number.'", asking_price="'.$asking_price.'", extras="'.$extras.'" WHERE house_id='.$slug.';');
         $db->query();
         $response = new Response();
         $response->setStatusCode(200);
