@@ -84,6 +84,6 @@ route_put_bid:
 
 route_delete_bid:
     path:     /bid/{slug}
-    defaults: { _controller: ACAApiBundle:bid:delete, slug: null }
+    defaults: { _controller: ACAApiBundle:Bid:delete, slug: null }
     requirements:
         _method: 'DELETE'
