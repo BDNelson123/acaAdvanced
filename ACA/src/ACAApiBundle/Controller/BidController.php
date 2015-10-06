@@ -61,12 +61,11 @@ class BidController extends Controller
             if ($this->get('rest_service')->post('bid', $data))
             {
                 $response->setStatusCode(200)->setContent('Posted new record to /bid');
-            } else {
-                $response->setStatusCode(500)->setContent('Query failed');
+            } else { $response->setStatusCode(500)->setContent('Query failed');
                 // ... whoops, bad SQL query
             }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount", "biddate"');
+            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount"');
             // ... the request didn't validate so $data was false
         }
         return $response;

@@ -130,6 +130,11 @@ class Bid
             return false;
         }
 
+        // Make sure the bid amount is something within a realistic range.
+        if ($data['bidamount'] < 1000 || $data['bidamount'] > 999999999) {
+            return false;
+        }
+
         return $data;
     }
 
@@ -143,7 +148,7 @@ class Bid
 
         // If it's missing needed fields ...
         if (empty($data['userid']) && empty($data['houseid']) &&
-            empty($data['bidamount']) && empty($data['biddate'])) {
+            empty($data['bidamount'])) {
             return false;
         }
 
