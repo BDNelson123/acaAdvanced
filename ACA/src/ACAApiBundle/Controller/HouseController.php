@@ -45,7 +45,7 @@ class HouseController extends Controller
          * @var $db DBCommon
          */
         $db = $this->get('db');
-        $db->setQuery('SELECT address city state zipcode main_image bed_number bath_number asking_price extras FROM house WHERE id = ' . $slug . ';');
+        $db->setQuery('SELECT address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras FROM house WHERE house_id = ' . $slug . ';');
         $db->query();
         $response = new JsonResponse();
         $response->setData($db->loadObjectList());
@@ -70,7 +70,7 @@ class HouseController extends Controller
         $asking_price = $data['asking_price'];
         $extras = $data['extras'];
         $db = $this->get('db');
-        $db->setQuery('INSERT INTO house(address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras)
+        $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras)
         VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$bath_number.'", "'.$asking_price.'", "'.$extras.'");');
         $db->query();
         $response = new JsonResponse();
@@ -99,7 +99,7 @@ class HouseController extends Controller
         $asking_price = $data['asking_price'];
         $extras = $data['extras'];
         $db = $this->get('db');
-        $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", main_image="'.$main_image.'", bed_number="'.$bed_number.'", bath_number="'.$bath_number.'", asking_price="'.$asking_price.'", extras="'.$extras.'" WHERE id='.$slug.';');
+        $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", main_image="'.$main_image.'", bed_number="'.$bed_number.'", bath_number="'.$bath_number.'", asking_price="'.$asking_price.'", extras="'.$extras.'" WHERE house_id='.$slug.';');
         $db->query();
         $response = new Response();
         $response->setStatusCode(200);
@@ -113,7 +113,7 @@ class HouseController extends Controller
      */
     public function deleteAction($slug) {
         $db = $this->get('db');
-        $db->setQuery('DELETE FROM house WHERE id='.$slug.';');
+        $db->setQuery('DELETE FROM house WHERE house_id='.$slug.';');
         $db->query();
         $response = new Response();
         $response->setStatusCode(200);
