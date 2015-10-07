@@ -108,19 +108,23 @@ class User
     /**
      * Validates a User with all required fields
      * @param Request $request
-     * @return bool|array
+     * @return string|array
      */
     public static function validatePost(Request $request) {
-        $data = User::getDataFromRequest($request);
+        $data = json_decode($request->getContent(), true);
+
+        if ($data === null) {
+            return 'Expected content type: application/json';
+        }
 
         // If it's missing needed fields ...
         if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
-            return false;
+            return 'Missing required fields: "email", "lastname", "firstname"';
         }
 
         // If the email isn't a valid email ...
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return false;
+            return '"Email" field must contain a valid email address';
         }
 
         return $data;
@@ -129,37 +133,26 @@ class User
     /**
      * Validates a User with any valid field
      * @param Request $request
-     * @return bool|array
+     * @return string|array
      */
     public static function validatePut(Request $request) {
-        $data = User::getDataFromRequest($request);
+        $data = json_decode($request->getContent(), true);
+
+        if ($data === null) {
+            return 'Expected content type: application/json';
+        }
 
         // If it's missing needed fields ...
         if (empty($data['email']) && empty($data['lastname']) &&
                 empty($data['firstname']) && empty($data['role'])) {
-            return false;
+            return 'Request contained no valid field (e.g. "email", "lastname", "firstname", "role")';
         }
 
         // If the email isn't a valid email ...
         if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return false;
+            return '"Email" field contained an invalid email address';
         }
 
-        return $data;
-    }
-
-    /**
-     * Gets an associative array out of a valid Json
-     * @param Request $request
-     * @return bool|array
-     */
-    private static function getDataFromRequest(Request $request) {
-        $data = json_decode($request->getContent(), true);
-
-        // If the output of json_decode is not an array ...
-        if (gettype($data) !== 'array') { return false; }
-
-        // Passed all checks, return the contents of the request
         return $data;
     }
 }
