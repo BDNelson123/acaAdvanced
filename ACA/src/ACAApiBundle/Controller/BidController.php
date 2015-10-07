@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 class BidController extends Controller
 {
     /**
-     * @return Response\JsonResponse
+     * @return JsonResponse
      */
     public function getAction()
     {
@@ -88,7 +88,7 @@ class BidController extends Controller
                 $response->setStatusCode(500)->setContent('Query failed');
             }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount", "biddate"');
+            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount", "biddate"');
         }
         return $response;
     }

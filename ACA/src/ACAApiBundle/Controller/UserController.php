@@ -64,7 +64,7 @@ class UserController extends Controller
                   $response->setStatusCode(500)->setContent('Query failed; please ensure fields contain valid data');
               }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid request, expected application/json. Required fields "firstname", "lastname", "email", valid fields "role". Email must be valid.');
+            $response->setStatusCode(400)->setContent('Invalid request, expected application/json. Required fields "firstname", "lastname", "email", valid fields "role". Email must be valid.');
         }
         return $response;
     }
@@ -85,7 +85,7 @@ class UserController extends Controller
                 $response->setStatusCode(500)->setContent('Query failed; please ensure fields contain valid data');
             }
         } else {
-            $response->setStatusCode(403)->setContent('Invalid request, expected application/json. Valid fields "firstname", "lastname", "email", "role". Email must be valid.');
+            $response->setStatusCode(400)->setContent('Invalid request, expected application/json. Valid fields "firstname", "lastname", "email", "role". Email must be valid.');
         }
         return $response;
     }
