@@ -2,7 +2,7 @@
 
 namespace ACAApiBundle\Controller;
 
-use ACAApiBundle\DBCommon;
+use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\House;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,13 +22,13 @@ class HouseController extends Controller
      */
     public function getAction()
     {
-
         /**
-         * @var $db DBCommon
+         * @var DBCommon
          */
         $db = $this->get('db');
-        $db->setQuery('SELECT address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras FROM house;');
+        $db->setQuery('SELECT * FROM house;');
         $db->query();
+        $ObjectList = $db->loadObjectList();
         $response = new JsonResponse();
         $response->setData($db->loadObjectList());
         return $response;
@@ -75,7 +75,8 @@ class HouseController extends Controller
         $db->query();
         $response = new JsonResponse();
         $response->setData(array(
-            'Inserted record with ID' => $db->getLastInsertId()
+            'status' => $db->getSqlState()
+            //'Inserted record with ID' => $db->getLastInsertId()
         ));
         return $response;
     }
