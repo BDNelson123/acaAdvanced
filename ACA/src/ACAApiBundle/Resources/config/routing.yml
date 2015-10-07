@@ -1,3 +1,4 @@
+## /USER ROUTING
 route_get_user:
     path:     /user
     defaults: { _controller: ACAApiBundle:User:get }
@@ -28,6 +29,7 @@ route_delete_user:
     requirements:
         _method: 'DELETE'
 
+## /HOUSE ROUTING
 route_get_house:
     path:     /house
     defaults: { _controller: ACAApiBundle:House:get }
@@ -58,6 +60,7 @@ route_delete_house:
     requirements:
         _method: 'DELETE'
 
+## BID ROUTING
 route_get_bid:
     path:     /bid
     defaults: { _controller: ACAApiBundle:Bid:get }
