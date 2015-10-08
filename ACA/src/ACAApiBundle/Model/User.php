@@ -3,12 +3,15 @@
 namespace ACAApiBundle\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * Class User
+ * Impelements UserInterface, EquitableInterface
  * @package ACAApiBundle\Model\User
  */
-class User
+class User implements UserInterface, EquatableInterface
 {
     /**
      * @var $id integer
@@ -19,6 +22,7 @@ class User
      * @Assert\NotBlank()
      */
     protected $lastname;
+
     /**
      * @var string
      * @Assert\NotBlank()
@@ -32,14 +36,22 @@ class User
     /**
      * @var string
      */
-    protected $role;
+    protected $roles;
 
     /**
-     * @param $id
+     * @var string
      */
-    public function __construct($id) {
-        $this->id = $id;
-    }
+    protected $username;
+
+    /**
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * @var string
+     */
+    protected $salt;
 
     /**
      * @return mixed
@@ -92,67 +104,226 @@ class User
     /**
      * @return mixed
      */
-    public function getRole()
+    public function getRoles()
     {
-        return $this->role;
+        return $this->roles;
     }
 
     /**
-     * @param mixed $role
+     * @param $roles
      */
-    public function setRole($role)
+    public function setRoles($roles)
     {
-        $this->role = $role;
+        $this->roles = $roles;
+    }
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
-     * Validates a User with all required fields
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * @param string $salt
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    }
+
+    /**
+     * Required by Symfony UserInterface
+     * (for some reason)
+     */
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * Required by Symfony UserInterface
+     * @param UserInterface $user
+     * @return bool
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if ($this->password !== $user->getPassword()) {
+            return false;
+        }
+
+        if ($this->salt !== $user->getSalt()) {
+            return false;
+        }
+
+        if ($this->username !== $user->getUsername()) {
+            return false;
+        }
+
+        return true;
+    }
+    /**
+     * Validates a request to post a new User
      * @param Request $request
      * @return string|array
      */
     public static function validatePost(Request $request) {
         $data = json_decode($request->getContent(), true);
 
+        // Expected: json
         if ($data === null) {
             return 'Expected content type: application/json';
         }
 
-        // If it's missing needed fields ...
-        if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
-            return 'Missing required fields: "email", "lastname", "firstname"';
+        // Require the following fields
+        if (empty($data['email']) || empty($data['username']) || empty($data['password'])) {
+            return 'Missing required fields: "email", "username", "password"';
         }
 
-        // If the email isn't a valid email ...
+        if (strlen($data['password']) > 64) {
+            return 'Password must be 64 characters or fewer';
+        }
+
+        // Require a valid email
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return '"Email" field must contain a valid email address';
+            return 'Email must be a valid email address';
         }
 
         return $data;
     }
 
     /**
-     * Validates a User with any valid field
+     * Validates a request to modify a User
      * @param Request $request
      * @return string|array
      */
     public static function validatePut(Request $request) {
         $data = json_decode($request->getContent(), true);
 
+        // Expected: json
         if ($data === null) {
             return 'Expected content type: application/json';
         }
 
-        // If it's missing needed fields ...
-        if (empty($data['email']) && empty($data['lastname']) &&
-                empty($data['firstname']) && empty($data['role'])) {
-            return 'Request contained no valid field (e.g. "email", "lastname", "firstname", "role")';
+        // Forbid the following fields to the Rest API
+        if (isset($data['roles']) && isset($data['is_active']) &&
+                isset($data['password']) && isset($data['id'])) {
+            return 'Request contained invalid fields';
         }
 
-        // If the email isn't a valid email ...
+        if (!empty($data['password']) && (strlen($data['password']) > 64)) {
+            return 'Password must be 64 characters or fewer';
+        }
+
+        // If an email field is put, the address given must be valid
         if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return '"Email" field contained an invalid email address';
+            return 'Email must be a valid email address';
         }
 
+        return $data;
+    }
+
+    /**
+     * Validates a login attempt; like everything else here, it expects Json
+     * @param Request $request
+     * @return string|array
+     */
+    public static function validateLogin(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        // Expected: json
+        if ($data === null) {
+            return 'Expected content type: application/json';
+        }
+
+        // Require the following fields
+        if (empty($data['username']) || empty($data['password'])) {
+            return 'Missing required fields: "username", "password"';
+        }
+
+        // Password must be 64 characters or less
+        if (strlen($data['password']) > 64) {
+            return 'Password is incorrectly formated';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Clean up fields that the client shouldn't see
+     * @param array|object
+     * @return array|object
+     */
+    public static function cleanupForDisplay($data) {
+        if (gettype($data) === 'array') {
+
+            foreach($data as $d) {
+                //unset($d->id);
+                unset($d->password);
+                unset($d->roles);
+                unset($d->salt);
+                unset($d->is_active);
+            }
+
+        } elseif (gettype($data) === 'object') {
+            //unset($data->id);
+            unset($data->password);
+            unset($data->roles);
+            unset($data->salt);
+            unset($data->is_active);
+        }
         return $data;
     }
 }
