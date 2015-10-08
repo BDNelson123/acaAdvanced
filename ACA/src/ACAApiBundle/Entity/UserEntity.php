@@ -18,9 +18,34 @@ class UserEntity
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=60, unique=true)
      */
     protected $email;
+
+    /**
+     * @ORM\Column(type="string", length=25, unique=true)
+     */
+    protected $username;
+
+    /**
+     * @ORM\Column(type="string", length=64)
+     */
+    protected $password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $salt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $roles;
+
+    /**
+     * @ORM\Column(name="is_active", type="boolean")
+     */
+    private $isActive;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -31,9 +56,4 @@ class UserEntity
      * @ORM\Column(type="string", length=255)
      */
     protected $lastname;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $role;
 }
