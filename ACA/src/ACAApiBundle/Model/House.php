@@ -269,4 +269,11 @@ class House
         return $this;
     }
 
+        /**
+         * Returns an array of errors for House with any valid field
+         * @param $data
+         * @return array
+         */
+
+    
 }
