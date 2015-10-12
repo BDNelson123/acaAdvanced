@@ -117,6 +117,8 @@ class Bid
         $this->biddate = $biddate;
     }
 
+
+
     /**
      * Validates a Bid with all required fields
      * @param Request $request

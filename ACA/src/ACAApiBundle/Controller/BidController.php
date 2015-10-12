@@ -4,6 +4,7 @@
 
 namespace ACAApiBundle\Controller;
 
+use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\Bid;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,27 +50,86 @@ class BidController extends Controller
         return $response;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
+    // This will need to be moved to the model, AWAY from the controller.
+    public static function bidErrors(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $userid = $data['userid'];
+        $houseid = $data['houseid'];
+        $bidamount = $data['bidamount'];
+        $biddate = $data['biddate'];
+        $errors = [];
+
+        if(empty($userid)) {
+            $errors['userid'] = 'Please provide a userid.';
+        }
+
+        if(empty($houseid)) {
+            $errors['houseid'] = 'Please provide a houseid.';
+        }
+
+        if(!empty($bidamount) && ($bidamount < 1000 || $bidamount > 99999999)) {
+            $errors['bidamount'] = 'Please provide a realistic bid amount.';
+        } elseif(empty($bidamount)) {
+            $errors['bidamount'] = 'Please provide a bid amount.';
+        }
+
+        return $errors;
+    }
+
     public function postAction(Request $request)
     {
-        $response = new Response;
-        $data = Bid::validatePost($request);
-        if ($data) {
-            if ($this->get('rest_service')->post('bid', $data))
-            {
-                $response->setStatusCode(200)->setContent('Posted new record to /bid');
-            } else { $response->setStatusCode(500)->setContent('Query failed');
-                // ... whoops, bad SQL query
-            }
+        $data = json_decode($request->getContent(), true);
+        $errors = $this->bidErrors($request);
+
+        if(empty($errors)) {
+
+            $userid = $data['userid'];
+            $houseid = $data['houseid'];
+            $bidamount = $data['bidamount'];
+            $biddate = $data['biddate'];
+
+            $db = $this->get('db');
+            $db->setQuery('INSERT INTO bid (userid, houseid, bidamount, biddate)
+                        VALUES("'.$userid.'", "'.$houseid.'", "'.$bidamount.'", "'.$biddate.'");');
+            $db->query();
+            $response = new JsonResponse();
+            $response->setData(array(
+                'status' => $db->getSqlState(),
+                'Inserted record with ID' => $db->getLastInsertId()
+            ));
+
         } else {
-            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount"');
-            // ... the request didn't validate so $data was false
+
+            $response = new JsonResponse();
+            $response->setData($errors);
+
         }
+
         return $response;
     }
+
+//    /**
+//     * @param Request $request
+//     * @return Response
+//     */
+//    public function postAction(Request $request)
+//    {
+//        $response = new Response;
+//        $data = Bid::validatePost($request);
+//        if ($data) {
+//            if ($this->get('rest_service')->post('bid', $data))
+//            {
+//                $response->setStatusCode(200)->setContent('Posted new record to /bid');
+//            } else { $response->setStatusCode(500)->setContent('Query failed');
+//                // ... whoops, bad SQL query
+//            }
+//        } else {
+//            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount"');
+//            // ... the request didn't validate so $data was false
+//        }
+//        return $response;
+//    }
 
     /**
      * @param $slug
@@ -106,6 +166,5 @@ class BidController extends Controller
         }
         return $response;
 
-        // Not working as of 10/05/15 -- Case mismatch between loaded and declared class names: ACAApiBundle\Controller\bidController vs ACAApiBundle\Controller\BidController
     }
 }
