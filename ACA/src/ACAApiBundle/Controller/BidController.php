@@ -131,6 +131,8 @@ class BidController extends Controller
 //        return $response;
 //    }
 
+
+
     /**
      * @param $slug
      * @param Request $request
@@ -138,9 +140,11 @@ class BidController extends Controller
      */
     public function putAction($slug, Request $request)
     {
-        $response = new Response();
-        $data = Bid::validatePut($request);
-        if ($data) {
+        $response = new JsonResponse();
+        $data = json_decode($request->getContent(), true);
+        $errors = $this->bidErrors($request);
+
+        if (empty($errors)) {
             if ($this->get('rest_service')->put('bid', $slug, $data))
             {
                 $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
@@ -148,8 +152,9 @@ class BidController extends Controller
                 $response->setStatusCode(500)->setContent('Query failed');
             }
         } else {
-            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount", "biddate"');
+            $response->setStatusCode(400)->setData($errors);
         }
+
         return $response;
     }
 
