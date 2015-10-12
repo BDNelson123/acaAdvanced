@@ -80,17 +80,19 @@ class HouseController extends Controller
           VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$asking_price.'", "'.$extras.'");');
           $db->query();
 
+          $message = array('Inserted record with ID'=> $db->getLastInsertId());
+
           $response = new JsonResponse();
-          $response->setData(array(
-              'status' => $db->getErrorString(),
-              'Inserted record with ID' => $db->getLastInsertId()
-          ));
+          $response->setStatusCode(200);
+          $response->setData(
+            $message);
 
         return $response;
 
         } else {
 
          $response = new JsonResponse();
+         $response->setStatusCode(400);
          $response->setData(
               $Errors
          );
@@ -257,6 +259,7 @@ class HouseController extends Controller
         } else {
 
          $response = new JsonResponse();
+         $response->setStatusCode(400);
          $response->setData(
               $Errors
          );
