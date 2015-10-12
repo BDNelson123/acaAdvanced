@@ -2,8 +2,6 @@
 
 namespace ACAApiBundle\Services;
 
-use ACAApiBundle\Services\DBCommon;
-
 /**
  * Class LoginService
  * @package ACAApiBundle\Services

@@ -117,13 +117,29 @@ class UserController extends Controller
         if (gettype($data) === 'array') {
             $encryptedPassword = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
             if ($this->get('login_service')->tryLogin($data['username'], $encryptedPassword)) {
-                $response->setStatusCode(200)->setContent('Successful login');
+                $apikey = mcrypt_encrypt(MCRYPT_BLOWFISH, 'lamesauce', time() . '&' . $data['username'], 'ecb');
+                $db = $this->get('db');
+                $db->setQuery('UPDATE user SET apikey="' .$apikey. '" WHERE username="' .$data['username'] .'";');
+                $db->query();
+                $response->setStatusCode(200)->headers->set('apikey', $apikey);
             } else {
                 $response->setStatusCode(400)->setContent('Login rejected fool');
             }
         } else {
             $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
         }
+        return $response;
+    }
+
+    /**
+     * @return Response
+     */
+    public function logoutAction() {
+
+        // Destroy my auth token, please
+
+        $response = new Response();
+        $response->setStatusCode(200)->setContent('Logged out, thanks');
         return $response;
     }
 }

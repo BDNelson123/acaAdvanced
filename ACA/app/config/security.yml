@@ -8,20 +8,16 @@ security:
             id: user_provider_service
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
         main:
+            pattern: ^/login
             anonymous: ~
-            # activate different ways to authenticate
 
-            # http_basic: ~
-            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: ~
-            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+        secured_area:
+            pattern: ^/user
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: user_provider
 
     encoders:
         ACAApiBundle\Model\User: sha512

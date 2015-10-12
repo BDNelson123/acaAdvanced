@@ -27,6 +27,12 @@ class UserProvider implements UserProviderInterface
         $this->db = $db;
     }
 
+    public function getUsernameForApikey($apikey) {
+        $this->db->setQuery('SELECT username FROM user WHERE apikey="' . $apikey . '" LIMIT 1;');
+        $this->db->query();
+        return $this->db->loadObject()->username;
+    }
+
     /**
      * Required by UserProviderInterface
      * @param string $username
@@ -45,6 +51,7 @@ class UserProvider implements UserProviderInterface
             $user->setFirstname($data->firstname);
             $user->setLastname($data->lastname);
             $user->setEmail($data->email);
+            $user->setRoles(array('ROLE_USER'));
             return $user;
         } else {
             throw new UsernameNotFoundException(sprintf('Could not load User '. $username . '; SQL state code: ' . $this->db->getSqlstate()));

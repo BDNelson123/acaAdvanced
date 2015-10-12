@@ -56,4 +56,10 @@ class UserEntity
      * @ORM\Column(type="string", length=255)
      */
     protected $lastname;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $apikey;
+
 }

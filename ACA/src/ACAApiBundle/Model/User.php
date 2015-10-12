@@ -169,15 +169,7 @@ class User implements UserInterface, EquatableInterface
      */
     public function getSalt()
     {
-        return $this->salt;
-    }
-
-    /**
-     * @param string $salt
-     */
-    public function setSalt($salt)
-    {
-        $this->salt = $salt;
+        return '';
     }
 
     /**
