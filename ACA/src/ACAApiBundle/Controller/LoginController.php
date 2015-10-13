@@ -21,15 +21,16 @@ class LoginController extends Controller {
      */
     public function loginAction(Request $request)
     {
-        $data = $this->get('login_service')->validateLogin($request);
-        if ($this->isError($data)) {
-            return new Response('Invalid request; ' .$data, 400);
-        } else {
-            if ($this->get('login_service')->tryLogin($data['username'], $data['password'])) {
-                return new Response('API key:' .$this->get('auth_service')->createToken($data['username']), 200);
+        $authService = $this->get('auth_service');
+        $data = User::validateLogin($request);
+        if (gettype($data) === 'array') {
+            if ($authService->tryLogin($data['username'], $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']))) {
+                return new Response('API key:' .$authService->createToken($data['username']), 200);
             } else {
                 return new Response('Login refused; invalid credentials', 403);
             }
+        } else {
+            return new Response('Invalid request; ' .$data, 400);
         }
     }
 
@@ -40,9 +41,9 @@ class LoginController extends Controller {
     public function logoutAction(Request $request) {
         $authService = $this->get('auth_service');
 
-        // Must actually have a valid auth token in order to destroy your auth token
-        $auth = $authService->authenticateRequest($request);
-        if ($this->isError($auth)) { return new Response('Authentication failed; ' .$auth, 401); }
+        // Must actually have an auth token in order to destroy your auth token
+        $error = $authService->authenticateRequest($request);
+        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
 
         $authService->destroyKey($request->headers->get('apikey'));
         return new Response('Logged out', 200);
@@ -53,17 +54,20 @@ class LoginController extends Controller {
      * @return Response
      */
     public function registerAction(Request $request) {
-        $data = $this->get('user_validator')->validateRegister($request);
-        if ($this->isError($data)) {
-            return new Response('Invalid request; ' .$data, 400);
-        } else {
+
+        $data = User::validatePost($request);
+
+        if (gettype($data) === 'array') {
+            // Hash that password
+            $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
+
             if ($this->get('rest_service')->post('user', $data)) {
                 return new Response('API key:' .$this->get('auth_service')->createToken($request), 200);
             } else {
                 return new Response('Request failed; internal server error', 500);
             }
+        } else {
+            return new Response('Invalid request; ' .$data, 400);
         }
     }
-
-    private function isError($data) { return gettype($data) === 'string'; }
 }
