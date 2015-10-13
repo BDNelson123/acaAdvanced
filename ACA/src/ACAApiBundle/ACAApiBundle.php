@@ -13,7 +13,7 @@ class ACAApiBundle extends Bundle
     {
         parent::build($container);
 
-        $extension = $container->getExtension('security');
-        $extension->addSecurityListenerFactory(new WsseFactory());
+ /*       $extension = $container->getExtension('security');
+        $extension->addSecurityListenerFactory(new WsseFactory());*/
     }
 }

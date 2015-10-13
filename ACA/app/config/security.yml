@@ -1,23 +1,21 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
-
-    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        user_provider:
-            id: user_provider_service
+        in_memory:
+            memory: ~
 
     firewalls:
-        main:
-            pattern: ^/login
+        default:
+            pattern: ^/
             anonymous: ~
-
-        secured_area:
-            pattern: ^/user
-            stateless: true
-            simple_preauth:
-                authenticator: apikey_authenticator
-            provider: user_provider
+#
+#        secured_area:
+#            pattern: ^/user
+#            stateless: true
+#            simple_preauth:
+#                authenticator: apikey_authenticator
+#            provider: user_provider
 
     encoders:
         ACAApiBundle\Model\User: sha512

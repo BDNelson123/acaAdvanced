@@ -4,7 +4,4 @@ parameters:
 #    parameter_name: value
 
 services:
-# Symfony ApiKeyAuthenticator
-    apikey_authenticator:
-        class:  ACAApiBundle\Security\ApiKeyAuthenticator
-        public: false
+#

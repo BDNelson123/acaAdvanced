@@ -35,17 +35,7 @@ class UserEntity
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $salt;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     protected $roles;
-
-    /**
-     * @ORM\Column(name="is_active", type="boolean")
-     */
-    private $isActive;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -58,7 +48,7 @@ class UserEntity
     protected $lastname;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=255)
      */
     protected $apikey;
 

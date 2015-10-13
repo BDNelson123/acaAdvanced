@@ -8,12 +8,12 @@ services:
     calls:
       - [setDb, ["@db"]]
 
-  user_provider_service:
-    class: ACAApiBundle\Services\UserProvider
+  login_service:
+    class: ACAApiBundle\Services\LoginService
     calls:
       - [setDb, ["@db"]]
 
-  login_service:
-    class: ACAApiBundle\Services\LoginService
+  auth_service:
+    class:  ACAApiBundle\Security\AuthService
     calls:
       - [setDb, ["@db"]]

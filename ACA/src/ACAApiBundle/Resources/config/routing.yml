@@ -1,3 +1,12 @@
+## /LOGIN AND /LOGOUT ROUTING
+route_login:
+    path: /login
+    defaults: { _controller:ACAApiBundle:Login:login }
+
+route_logout:
+    path: /logout
+    defaults: { _controller:ACAApiBundle:Login:logout }
+
 ## /USER ROUTING
 route_get_user:
     path:     /user
@@ -28,15 +37,6 @@ route_delete_user:
     defaults: { _controller: ACAApiBundle:User:delete, slug: null }
     requirements:
         _method: 'DELETE'
-
-## /LOGIN AND /LOGOUT ROUTING
-route_login:
-    path: /login
-    defaults: { _controller:ACAApiBundle:User:login }
-
-route_logout:
-    path: /logout
-    defaults: { _controller:ACAApiBundle:User:logout }
 
 ## /HOUSE ROUTING
 route_get_house:

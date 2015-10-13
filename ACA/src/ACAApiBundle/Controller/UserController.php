@@ -16,36 +16,43 @@ use Symfony\Component\HttpFoundation\Request;
 class UserController extends Controller
 {
     /**
-     * @return Response|JsonResponse
+     * @param Request $request
+     * @return JsonResponse|Response
+     * @throws \Exception
      */
-    public function getAction()
+    public function getAction(Request $request)
     {
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($auth != true) {
+            return new Response('Authentication failed; ' .$auth, 403);
+        }
+
         $data = $this->get('rest_service')->get('user');
         if ($data) {
-            $response = new JsonResponse();
-            $response->setData(User::cleanupForDisplay($data));
+            return new JsonResponse(User::cleanupForDisplay($data), 200);
         } else {
-            $response = new Response;
-            $response->setStatusCode(500)->setContent('Index request found no records');
+            return new Response('Index request found no records', 200);
         }
-        return $response;
     }
 
     /**
      * @param $slug
+     * @param Request $request
      * @return Response|JsonResponse
      */
-    public function showAction($slug)
+    public function showAction($slug, Request $request)
     {
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($auth != true) {
+            return new Response('Authentication failed; ' .$auth, 403);
+        }
+
         $data = $this->get('rest_service')->get('user', $slug);
         if ($data) {
-            $response = new JsonResponse();
-            $response->setData(User::cleanupForDisplay($data));
+            return new JsonResponse(User::cleanupForDisplay($data), 200);
         } else {
-            $response = new Response;
-            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
+            return new Response('No record ' .$slug. ' found', 200);
         }
-        return $response;
     }
 
     /**
@@ -55,17 +62,22 @@ class UserController extends Controller
      */
     public function postAction(Request $request)
     {
-        $response = new Response;
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($auth != true) {
+            return new Response('Authentication failed; ' .$auth, 403);
+        }
+
         $data = User::validatePost($request);
         if (gettype($data) === 'array') {
             $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
-
-            $this->get('rest_service')->post('user', $data) ? $response->setStatusCode(200)->setContent('Posted new record to /user') :
-                                                              $response->setStatusCode(500)->setContent('Request failed; internal server error');
+            if ($this->get('rest_service')->post('user', $data)) {
+                return new Response('Posted new record to /user', 200);
+            } else {
+                return new Response('Request failed; internal server error', 500);
+            }
         } else {
-            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+            return new Response('Invalid request; ' .$data, 400);
         }
-        return $response;
     }
 
     /**
@@ -75,71 +87,42 @@ class UserController extends Controller
      */
     public function putAction($slug, Request $request)
     {
-        $response = new Response();
-        $data = User::validatePut($request);
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($auth != true) {
+            return new Response('Authentication failed; ' .$auth, 403);
+        }
 
+        $data = User::validatePut($request);
         if (gettype($data) === 'array') {
             if (!empty($data['password'])) {
                 $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
             }
-
-            $this->get('rest_service')->put('user', $slug, $data) ? $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug) :
-                                                                    $response->setStatusCode(500)->setContent('Request failed; internal server error');
+            if ($this->get('rest_service')->put('user', $slug, $data)) {
+                return new Response('Succesfully updated record ' .$slug, 200);
+            } else {
+                return new Response('Request failed; internal server error', 500);
+            }
         } else {
-            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+            return new Response('Invalid request; ' .$data, 400);
         }
-        return $response;
-    }
-
-    /**
-     * @param $slug
-     * @return Response
-     */
-    public function deleteAction($slug)
-    {
-        $response = new Response();
-        if ($this->get('rest_service')->delete('user', $slug)) {
-            $response->setStatusCode(200)->setContent('Successfully deleted record ' . $slug);
-        } else {
-            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
-        }
-        return $response;
     }
 
     /**
      * @param Request $request
+     * @param $slug
      * @return Response
      */
-    public function loginAction(Request $request)
+    public function deleteAction($slug, Request $request)
     {
-        $response = new Response();
-        $data = User::validateLogin($request);
-        if (gettype($data) === 'array') {
-            $encryptedPassword = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
-            if ($this->get('login_service')->tryLogin($data['username'], $encryptedPassword)) {
-                $apikey = mcrypt_encrypt(MCRYPT_BLOWFISH, 'lamesauce', time() . '&' . $data['username'], 'ecb');
-                $db = $this->get('db');
-                $db->setQuery('UPDATE user SET apikey="' .$apikey. '" WHERE username="' .$data['username'] .'";');
-                $db->query();
-                $response->setStatusCode(200)->headers->set('apikey', $apikey);
-            } else {
-                $response->setStatusCode(400)->setContent('Login rejected fool');
-            }
-        } else {
-            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($auth != true) {
+            return new Response('Authentication failed; ' .$auth, 403);
         }
-        return $response;
-    }
 
-    /**
-     * @return Response
-     */
-    public function logoutAction() {
-
-        // Destroy my auth token, please
-
-        $response = new Response();
-        $response->setStatusCode(200)->setContent('Logged out, thanks');
-        return $response;
+        if ($this->get('rest_service')->delete('user', $slug)) {
+            return new Response('Successfully deleted record ' . $slug, 200);
+        } else {
+            return new Response('No record ' .$slug. ' found', 400);
+        }
     }
 }

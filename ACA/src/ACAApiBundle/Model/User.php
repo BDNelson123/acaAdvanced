@@ -49,11 +49,6 @@ class User implements UserInterface, EquatableInterface
     protected $password;
 
     /**
-     * @var string
-     */
-    protected $salt;
-
-    /**
      * @return mixed
      */
     public function getLastname()
@@ -305,16 +300,14 @@ class User implements UserInterface, EquatableInterface
                 //unset($d->id);
                 unset($d->password);
                 unset($d->roles);
-                unset($d->salt);
-                unset($d->is_active);
+                unset($d->apikey);
             }
 
         } elseif (gettype($data) === 'object') {
             //unset($data->id);
             unset($data->password);
             unset($data->roles);
-            unset($data->salt);
-            unset($data->is_active);
+            unset($data->apikey);
         }
         return $data;
     }
