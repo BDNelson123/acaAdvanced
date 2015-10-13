@@ -67,7 +67,7 @@ class AuthService
             return 'API key is outdated';
         }
 
-        return 'Authenticated';
+        return 'Clear';
     }
 
     /**

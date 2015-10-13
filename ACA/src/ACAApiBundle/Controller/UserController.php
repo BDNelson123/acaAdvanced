@@ -23,7 +23,7 @@ class UserController extends Controller
     public function getAction(Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != 'Authenticated') {
+        if ($auth != 'Clear') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
     public function showAction($slug, Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != 'Clear') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
@@ -63,7 +63,7 @@ class UserController extends Controller
     public function postAction(Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != 'Clear') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
@@ -91,7 +91,7 @@ class UserController extends Controller
     public function putAction($slug, Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != 'Clear') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
@@ -123,7 +123,7 @@ class UserController extends Controller
     public function deleteAction($slug, Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != null) {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
