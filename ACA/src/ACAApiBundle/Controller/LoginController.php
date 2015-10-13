@@ -58,7 +58,7 @@ class LoginController extends Controller {
             return new Response('Invalid request; ' .$data, 400);
         } else {
             if ($this->get('rest_service')->post('user', $data)) {
-                return new Response('API key:' .$this->get('auth_service')->createToken($request), 200);
+                return new Response('API key:' .$this->get('auth_service')->createToken($data['username']), 200);
             } else {
                 return new Response('Request failed; internal server error', 500);
             }
