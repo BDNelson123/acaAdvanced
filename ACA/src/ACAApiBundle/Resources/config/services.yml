@@ -14,6 +14,6 @@ services:
       - [setDb, ["@db"]]
 
   auth_service:
-    class:  ACAApiBundle\Security\AuthService
+    class:  ACAApiBundle\Services\AuthService
     calls:
       - [setDb, ["@db"]]

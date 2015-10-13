@@ -1,14 +1,8 @@
 <?php
 
-namespace ACAApiBundle\Security;
+namespace ACAApiBundle\Services;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use ACAApiBundle\Services\UserProvider;
-use ACAApiBundle\Services\DBCommon;
-use ACAApiBundle\Services\LoginService;
 
 /**
  * Class AuthService
@@ -34,6 +28,9 @@ class AuthService
      */
     public function createToken($username)
     {
+        // Token format: {timestamp}:{username}
+        // Regexp pattern: /[0-9]+:[A-z]+/
+        $username = str_replace(array(',','\\',';'), '', $username);
         $apikey = $this->encryptString(time() . ':' . $username);
         $this->stashKey($apikey, $username);
         return $apikey;
@@ -46,15 +43,15 @@ class AuthService
     public function authenticateRequest(Request $request)
     {
         // The request must contain the header 'apikey
-        $apiKey = $request->headers->get('apikey');
+        $apiKey = str_replace(array(',','\\',';'), '', $request->headers->get('apikey'));
         if (!$apiKey) {
-            throw new BadCredentialsException('Expected header "apikey" not found');
+            return 'Expected header "apikey" missing';
         }
 
         // API key must be the current token for a user
         $username = $this->getUsernameForApiKey($apiKey);
         if (!$username) {
-            throw new BadCredentialsException('API key does not exist');
+            return 'API key does not exist';
         }
 
         // Decrypt the apikey
@@ -62,15 +59,15 @@ class AuthService
 
         // Decrypted key must be in the correct format
         if (!preg_match('/[0-9]+:[A-z]+/', $decrypted)) {
-            throw new BadCredentialsException('API key is invalid');
+            return 'API key is invalid';
         }
 
         // ApiKey must have been created somewhat recently
-        if (time() - explode(':', $decrypted)[0] > 10000) {
-            throw new BadCredentialsException('API key is outdated');
+        if (time() - explode(':', $decrypted)[0] > 3000) {
+            return 'API key is outdated';
         }
 
-        return true;
+        return 'Authenticated';
     }
 
     /**
@@ -129,7 +126,7 @@ class AuthService
      * @return bool
      */
     public function destroyKey($username) {
-        $this->db->setQuery('UPDATE user SET apikey="" WHERE username="' .$username. '";');
+        $this->db->setQuery('UPDATE user SET apikey="" WHERE username="' .str_replace(array(',','\\',';'), '', $username). '";');
         $this->db->query();
 
         if ($this->db->getSqlstate() === '00000') {
@@ -144,23 +141,12 @@ class AuthService
      * @return null
      */
     private function getUsernameForApikey($apikey) {
-        $this->db->setQuery('SELECT username FROM user WHERE apikey="' . str_replace(array(',','\\',';'), '', $apikey) . '" LIMIT 1;');
+        $this->db->setQuery('SELECT username FROM user WHERE apikey="' . $apikey . '" LIMIT 1;');
         $this->db->query();
         if (!empty($this->db->loadObject())) {
             return $this->db->loadObject()->username;
         } else {
             return null;
         }
-    }
-
-    /**
-     * @param Request $request
-     * @param AuthenticationException $exception
-     * @return Response
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-
-        return new Response("Authentication Failed.", 403);
     }
 }

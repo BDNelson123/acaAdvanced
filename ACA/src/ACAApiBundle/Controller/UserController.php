@@ -23,7 +23,7 @@ class UserController extends Controller
     public function getAction(Request $request)
     {
         $auth = $this->get('auth_service')->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != 'Authenticated') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
 
@@ -69,7 +69,10 @@ class UserController extends Controller
 
         $data = User::validatePost($request);
         if (gettype($data) === 'array') {
+            // Hash that password
             $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
+
+            // Try post
             if ($this->get('rest_service')->post('user', $data)) {
                 return new Response('Posted new record to /user', 200);
             } else {
@@ -94,9 +97,14 @@ class UserController extends Controller
 
         $data = User::validatePut($request);
         if (gettype($data) === 'array') {
+
+            // If we got a password, hash it before updating record
+            // For details on security.password_encoder see security.yml under 'encoders'
             if (!empty($data['password'])) {
                 $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
             }
+
+            // Put any valid data we got in that request to the record
             if ($this->get('rest_service')->put('user', $slug, $data)) {
                 return new Response('Succesfully updated record ' .$slug, 200);
             } else {
