@@ -149,4 +149,22 @@ class AuthService
             return null;
         }
     }
+
+    /**
+     * @param $username
+     * @param $encryptedPassword
+     * @return bool
+     */
+    public function tryLogin($username, $encryptedPassword) {
+
+        $query = 'SELECT * FROM user WHERE username="' .$username. '" AND password="' .$encryptedPassword . '" LIMIT 1;';
+        $this->db->setQuery($query);
+        $this->db->query();
+
+        if ($this->db->getSqlstate() === '00000') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

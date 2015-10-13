@@ -23,7 +23,7 @@ class LoginController extends Controller {
     {
         $data = User::validateLogin($request);
         if (gettype($data) === 'array') {
-            if ($this->get('login_service')
+            if ($this->get('auth_service')
                 ->tryLogin($data['username'], $this->container->get('security.password_encoder')
                                                 ->encodePassword(new User, $data['password']))) {
                 return new Response('API key:' .$this->get('auth_service')->createToken($data['username']), 200);
@@ -42,9 +42,10 @@ class LoginController extends Controller {
     public function logoutAction(Request $request) {
         $authService = $this->get('auth_service');
         $auth = $authService->authenticateRequest($request);
-        if ($auth != true) {
+        if ($auth != 'Clear') {
             return new Response('Authentication failed; ' .$auth, 403);
         }
+
         $authService->destroyToken($authService->getUsernameForApikey($request->headers->get('apikey')));
         return new Response('Logged out', 200);
     }
