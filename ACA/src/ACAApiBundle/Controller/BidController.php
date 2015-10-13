@@ -18,40 +18,12 @@ use Symfony\Component\HttpFoundation\Request;
 class BidController extends Controller
 {
     /**
-     * @return JsonResponse
+     * Returns an array of errors based on user input for a Bid
+     * @param Request $request
+     * @return array
      */
-    public function getAction()
-    {
-        $data = $this->get('rest_service')->get('bid');
-        if ($data) {
-            $response = new JsonResponse();
-            $response->setData($data);
-        } else {
-            $response = new Response;
-            $response->setStatusCode(500)->setContent('Index request found no records');
-        }
-        return $response;
-    }
-
-    /**
-     * @param $slug
-     * @return Response\JsonResponse
-     */
-    public function showAction($slug)
-    {
-        $data = $this->get('rest_service')->get('bid', $slug);
-        if ($data) {
-            $response = new JsonResponse();
-            $response->setData($data);
-        } else {
-            $response = new Response;
-            $response->setStatusCode(500)->setContent('No record found');
-        }
-        return $response;
-    }
-
     // This will need to be moved to the model, AWAY from the controller.
-    public static function bidErrors(Request $request)
+    public function bidErrors(Request $request)
     {
         $data = json_decode($request->getContent(), true);
         $userid = $data['userid'];
@@ -60,12 +32,24 @@ class BidController extends Controller
         $biddate = $data['biddate'];
         $errors = [];
 
+        // Check if userid has been inputted
         if(empty($userid)) {
             $errors['userid'] = 'Please provide a userid.';
         }
 
+        // Check to see if userid exists
+        if(!($this->get('rest_service')->get('user', $userid))) {
+            $errors['userid'] = 'This userid does not exist.';
+        }
+
+        // Add check to see if existing houseid
         if(empty($houseid)) {
             $errors['houseid'] = 'Please provide a houseid.';
+        }
+
+        // Check to see if houseid exists
+        if(!($this->get('rest_service')->get('house', $houseid))) {
+            $errors['houseid'] = 'This houseid does not exist.';
         }
 
         if(!empty($bidamount) && ($bidamount < 1000 || $bidamount > 99999999)) {
@@ -77,32 +61,72 @@ class BidController extends Controller
         return $errors;
     }
 
+
+    /**
+     * @return JsonResponse
+     */
+    public function getAction()
+    {
+        $response = new JsonResponse();
+        $data = $this->get('rest_service')->get('bid');
+
+        if ($data) {
+
+            $response->setData($data);
+
+        } else {
+
+            $response->setStatusCode(400)
+                ->setData(array(
+                    'message' => 'Index request found no records'
+                )
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * @param $slug
+     * @return Response\JsonResponse
+     */
+    public function showAction($slug)
+    {
+        $response = new JsonResponse();
+        $data = $this->get('rest_service')->get('bid', $slug);
+
+        if ($data) {
+
+            $response->setData($data);
+
+        } else {
+
+            $response->setStatusCode(400)->setData(array('message' => 'No record found'));
+        }
+        return $response;
+    }
+
     public function postAction(Request $request)
     {
+        $response = new JsonResponse();
         $data = json_decode($request->getContent(), true);
         $errors = $this->bidErrors($request);
 
         if(empty($errors)) {
 
-            $userid = $data['userid'];
-            $houseid = $data['houseid'];
-            $bidamount = $data['bidamount'];
-            $biddate = $data['biddate'];
+            $this->get('rest_service')->post('bid', $data);
 
             $db = $this->get('db');
-            $db->setQuery('INSERT INTO bid (userid, houseid, bidamount, biddate)
-                        VALUES("'.$userid.'", "'.$houseid.'", "'.$bidamount.'", "'.$biddate.'");');
-            $db->query();
-            $response = new JsonResponse();
-            $response->setData(array(
-                'status' => $db->getSqlState(),
-                'Inserted record with ID' => $db->getLastInsertId()
-            ));
+
+            $response->setStatusCode(200)->setData(
+                array(
+                'message' => 'Successfully posted new record',
+                'id' => $db->getLastInsertId()
+                )
+            );
 
         } else {
 
-            $response = new JsonResponse();
-            $response->setData($errors);
+            $response->setStatusCode(400)->setData($errors);
 
         }
 
@@ -147,9 +171,9 @@ class BidController extends Controller
         if (empty($errors)) {
             if ($this->get('rest_service')->put('bid', $slug, $data))
             {
-                $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
+                $response->setStatusCode(200)->setData(array('message' => 'Successfully updated record ' .$slug));
             } else {
-                $response->setStatusCode(500)->setContent('Query failed');
+                $response->setStatusCode(500)->setData(array('message' => 'Query failed'));
             }
         } else {
             $response->setStatusCode(400)->setData($errors);
@@ -165,9 +189,9 @@ class BidController extends Controller
     public function deleteAction($slug) {
         $response = new Response();
         if ($this->get('rest_service')->delete('bid', $slug)) {
-            $response->setStatusCode(200)->setContent('Successfully deleted record ' . $slug);
+            $response->setStatusCode(200)->setData(array('message' => 'Successfully deleted record ' . $slug));
         } else {
-            $response->setStatusCode(500)->setContent('Query failed');
+            $response->setStatusCode(500)->setData(array('message' => 'Query failed'));
         }
         return $response;
 
