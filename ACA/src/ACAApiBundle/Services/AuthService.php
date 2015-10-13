@@ -165,28 +165,10 @@ class AuthService
     }
 
     /**
-     * @param string $username
-     * @param string $hashedPassword
-     * @return bool
-     */
-    public function tryLogin($username, $hashedPassword) {
-
-        $query = 'SELECT * FROM user WHERE username="' .$this->sanitize($username). '" AND password="' .$this->sanitize($hashedPassword). '" LIMIT 1;';
-        $this->db->setQuery($query);
-        $this->db->query();
-
-        if ($this->db->getSqlstate() === '00000') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @param string $string
      * @return string
      */
     private function sanitize($string) {
-        return str_replace(array(',','\\',';'), '', $string);
+        return str_replace(array(',','*','\\',';'), '', $string);
     }
 }

@@ -23,12 +23,12 @@ class UserController extends Controller
     public function getAction(Request $request)
     {
         // Need valid auth to get User index
-        $error = $this->get('auth_service')->authenticateRequest($request);
-        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($this->isError($auth)) { return new Response('Authentication failed; ' .$auth, 401); }
 
         $data = $this->get('rest_service')->get('user');
         if ($data) {
-            return new JsonResponse(User::cleanupForDisplay($data), 200);
+            return new JsonResponse($this->cleanup($data), 200);
         } else {
             return new Response('Index request found no records', 200);
         }
@@ -42,12 +42,12 @@ class UserController extends Controller
     public function showAction($slug, Request $request)
     {
         // Need auth to look at User records
-        $error = $this->get('auth_service')->authenticateRequest($request);
-        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($this->isError($auth)) { return new Response('Authentication failed; ' .$auth, 401); }
 
         $data = $this->get('rest_service')->get('user', $slug);
         if ($data) {
-            return new JsonResponse(User::cleanupForDisplay($data), 200);
+            return new JsonResponse($this->cleanup($data), 200);
         } else {
             return new Response('No record ' .$slug. ' found', 200);
         }
@@ -61,24 +61,19 @@ class UserController extends Controller
     public function putAction($slug, Request $request)
     {
         // Need auth and must be owner to modify User record
-        $error = $this->get('auth_service')->authenticateRequest($request);
-        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($this->isError($auth)) { return new Response('Authentication failed; ' .$auth, 401); }
         if (!$this->isOwner($request, $slug)) { return new Response('Permission denied', 403); }
 
-        $data = User::validatePut($request);
-        if (gettype($data) === 'array') {
-            // If we got a password, hash it before updating record
-            if (!empty($data['password'])) {
-                $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
-            }
-            // Put any valid data we got in that request to the record
+        $data = $this->get('user_validator')->validatePut($request);
+        if ($this->isError($data)) {
+            return new Response('Invalid request; ' .$data, 400);
+        } else {
             if ($this->get('rest_service')->put('user', $slug, $data)) {
                 return new Response('Succesfully updated record ' .$slug, 200);
             } else {
                 return new Response('Request failed; internal server error', 500);
             }
-        } else {
-            return new Response('Invalid request; ' .$data, 400);
         }
     }
 
@@ -90,8 +85,8 @@ class UserController extends Controller
     public function deleteAction($slug, Request $request)
     {
         // Need auth and must be owner to delete User record
-        $error = $this->get('auth_service')->authenticateRequest($request);
-        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
+        $auth = $this->get('auth_service')->authenticateRequest($request);
+        if ($this->isError($auth)) { return new Response('Authentication failed; ' .$auth, 401); }
         if (!$this->isOwner($request, $slug)) { return new Response('Permission denied', 403); }
 
         if ($this->get('rest_service')->delete('user', $slug)) {
@@ -99,6 +94,26 @@ class UserController extends Controller
         } else {
             return new Response('No record ' .$slug. ' found', 400);
         }
+    }
+
+    /**
+     * Clean up fields that the client shouldn't see
+     * @param array|object
+     * @return array|object
+     */
+    private function cleanup($data) {
+        if (gettype($data) === 'array') {
+            foreach($data as $d) {
+                unset($d->password);
+                unset($d->roles);
+                unset($d->apikey);
+            }
+        } elseif (gettype($data) === 'object') {
+            unset($data->password);
+            unset($data->roles);
+            unset($data->apikey);
+        }
+        return $data;
     }
 
     /**
@@ -112,4 +127,10 @@ class UserController extends Controller
     private function isOwner(Request $request, $id) {
         return $this->get('auth_service')->getUserIdForApiKey($request->headers->get('apikey')) === $id;
     }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    private function isError($data) { return gettype($data) === 'string'; }
 }
