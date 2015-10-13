@@ -22,16 +22,27 @@ class HouseController extends Controller
      */
     public function getAction()
     {
-        /**
-         * @var DBCommon
-         */
-        $db = $this->get('db');
-        $db->setQuery('SELECT * FROM house;');
-        $db->query();
-        $ObjectList = $db->loadObjectList();
+        //data queries the database for house
+        $data = $this->get('rest_service')->get('house');
+
+        //message if there is an error in getting the query
+        $error = array('Error'=>'Index request found no records');
+
+        //creates a json response
         $response = new JsonResponse();
-        $response->setData($db->loadObjectList());
-        return $response;
+
+        if ($data) {
+
+            $response->setStatusCode(200)->setData($data);
+
+        } else {
+
+            $response->setStatusCode(400)->setData($error);
+
+        }
+
+      return $response;
+
     }
 
     /**
@@ -41,15 +52,29 @@ class HouseController extends Controller
      */
     public function showAction($slug)
     {
-        /**
-         * @var $db DBCommon
-         */
-        $db = $this->get('db');
-        $db->setQuery('SELECT address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras FROM house WHERE house_id = ' . $slug . ';');
-        $db->query();
+
+        //data queries the database for house for the specific
+        $data = $this->get('rest_service')->get('house', $slug);
+
+
+        //message if there is an error in getting the query
+        $error = array('Error'=>'No record house ' . $slug . ' found.');
+
+        //creates a json response
         $response = new JsonResponse();
-        $response->setData($db->loadObjectList());
+
+        if ($data) {
+
+            $response->setData($data);
+
+        } else {
+
+            $response->setStatusCode(500)->setContent($error);
+
+        }
+
         return $response;
+
     }
 
     /**
@@ -244,6 +269,9 @@ class HouseController extends Controller
         $extras = $data['extras'];
 
         $Errors = $this->houseErrors($data);
+        $message = array('Inserted record with ID'=> $db->getLastInsertId());
+
+
 
         if(empty($Errors)){
 
@@ -253,6 +281,9 @@ class HouseController extends Controller
 
           $response = new JsonResponse();
           $response->setStatusCode(200);
+          $response->setData(
+               $message
+          );
 
         return $response;
 
