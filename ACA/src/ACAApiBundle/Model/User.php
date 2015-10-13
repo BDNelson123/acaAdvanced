@@ -245,8 +245,8 @@ class User implements UserInterface, EquatableInterface
 
         // Forbid the following fields to the Rest API
         if (isset($data['roles']) && isset($data['is_active']) &&
-                isset($data['password']) && isset($data['id'])) {
-            return 'Request contained invalid fields';
+                isset($data['password']) && isset($data['id']) && isset($data['username'])) {
+            return 'Request contained invalid or readonly fields';
         }
 
         if (!empty($data['password']) && (strlen($data['password']) > 64)) {

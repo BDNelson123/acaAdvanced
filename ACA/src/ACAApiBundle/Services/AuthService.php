@@ -23,14 +23,14 @@ class AuthService
     }
 
     /**
-     * @param $username
+     * @param string $username
      * @return string
      */
     public function createToken($username)
     {
         // Token format: {timestamp}:{username}
         // Regexp pattern: /[0-9]+:[A-z]+/
-        $username = str_replace(array(',','\\',';'), '', $username);
+        $username = $this->sanitize($username);
         $apikey = $this->encryptString(time() . ':' . $username);
         $this->stashKey($apikey, $username);
         return $apikey;
@@ -43,7 +43,7 @@ class AuthService
     public function authenticateRequest(Request $request)
     {
         // The request must contain the header 'apikey
-        $apiKey = str_replace(array(',','\\',';'), '', $request->headers->get('apikey'));
+        $apiKey = $this->sanitize($request->headers->get('apikey'));
         if (!$apiKey) {
             return 'Expected header "apikey" missing';
         }
@@ -67,15 +67,15 @@ class AuthService
             return 'API key is outdated';
         }
 
-        return 'Clear';
+        return false;
     }
 
     /**
-     * @param $string
+     * @param string $string
      * @param string $key
      * @return string
      */
-    public function encryptString($string, $key = "17708009FF00") {
+    private function encryptString($string, $key = "17708009FF00") {
         $encrypt = serialize($string);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC), MCRYPT_DEV_URANDOM);
         $key = pack('H*', $key);
@@ -86,11 +86,11 @@ class AuthService
     }
 
     /**
-     * @param $string
+     * @param string $string
      * @param string $key
      * @return bool|mixed|string
      */
-    public function decryptString($string, $key = "17708009FF00") {
+    private function decryptString($string, $key = "17708009FF00") {
         $decrypt = explode('|', $string.'|');
         $decoded = base64_decode($decrypt[0]);
         $iv = base64_decode($decrypt[1]);
@@ -106,7 +106,7 @@ class AuthService
     }
 
     /**
-     * @param $apikey
+     * @param string $apikey
      * @param $username
      * @return bool
      */
@@ -122,11 +122,11 @@ class AuthService
     }
 
     /**
-     * @param $username
+     * @param string $apikey
      * @return bool
      */
-    public function destroyKey($username) {
-        $this->db->setQuery('UPDATE user SET apikey="" WHERE username="' .str_replace(array(',','\\',';'), '', $username). '";');
+    public function destroyKey($apikey) {
+        $this->db->setQuery('UPDATE user SET apikey="" WHERE username="' .$this->sanitize($this->getUsernameForApikey($apikey)). '";');
         $this->db->query();
 
         if ($this->db->getSqlstate() === '00000') {
@@ -137,8 +137,8 @@ class AuthService
     }
 
     /**
-     * @param $apikey
-     * @return null
+     * @param string $apikey
+     * @return string|null
      */
     private function getUsernameForApikey($apikey) {
         $this->db->setQuery('SELECT username FROM user WHERE apikey="' . $apikey . '" LIMIT 1;');
@@ -151,13 +151,27 @@ class AuthService
     }
 
     /**
-     * @param $username
-     * @param $encryptedPassword
+     * @param string $apikey
+     * @return integer|null
+     */
+    public function getUserIdForApikey($apikey) {
+        $this->db->setQuery('SELECT id FROM user WHERE apikey="' .$this->sanitize($apikey). '" LIMIT 1;');
+        $this->db->query();
+        if (!empty($this->db->loadObject())) {
+            return $this->db->loadObject()->id;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $username
+     * @param string $hashedPassword
      * @return bool
      */
-    public function tryLogin($username, $encryptedPassword) {
+    public function tryLogin($username, $hashedPassword) {
 
-        $query = 'SELECT * FROM user WHERE username="' .$username. '" AND password="' .$encryptedPassword . '" LIMIT 1;';
+        $query = 'SELECT * FROM user WHERE username="' .$this->sanitize($username). '" AND password="' .$this->sanitize($hashedPassword). '" LIMIT 1;';
         $this->db->setQuery($query);
         $this->db->query();
 
@@ -166,5 +180,13 @@ class AuthService
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    private function sanitize($string) {
+        return str_replace(array(',','\\',';'), '', $string);
     }
 }

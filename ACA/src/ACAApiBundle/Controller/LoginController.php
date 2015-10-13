@@ -21,14 +21,13 @@ class LoginController extends Controller {
      */
     public function loginAction(Request $request)
     {
+        $authService = $this->get('auth_service');
         $data = User::validateLogin($request);
         if (gettype($data) === 'array') {
-            if ($this->get('auth_service')
-                ->tryLogin($data['username'], $this->container->get('security.password_encoder')
-                                                ->encodePassword(new User, $data['password']))) {
-                return new Response('API key:' .$this->get('auth_service')->createToken($data['username']), 200);
+            if ($authService->tryLogin($data['username'], $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']))) {
+                return new Response('API key:' .$authService->createToken($data['username']), 200);
             } else {
-                return new Response('Could not login; bad credentials', 403);
+                return new Response('Login refused; invalid credentials', 403);
             }
         } else {
             return new Response('Invalid request; ' .$data, 400);
@@ -41,12 +40,34 @@ class LoginController extends Controller {
      */
     public function logoutAction(Request $request) {
         $authService = $this->get('auth_service');
-        $auth = $authService->authenticateRequest($request);
-        if ($auth != 'Clear') {
-            return new Response('Authentication failed; ' .$auth, 403);
-        }
 
-        $authService->destroyToken($authService->getUsernameForApikey($request->headers->get('apikey')));
+        // Must actually have an auth token in order to destroy your auth token
+        $error = $authService->authenticateRequest($request);
+        if ($error) { return new Response('Authentication failed; ' .$error, 401); }
+
+        $authService->destroyKey($request->headers->get('apikey'));
         return new Response('Logged out', 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function registerAction(Request $request) {
+
+        $data = User::validatePost($request);
+
+        if (gettype($data) === 'array') {
+            // Hash that password
+            $data['password'] = $this->container->get('security.password_encoder')->encodePassword(new User, $data['password']);
+
+            if ($this->get('rest_service')->post('user', $data)) {
+                return new Response('API key:' .$this->get('auth_service')->createToken($request), 200);
+            } else {
+                return new Response('Request failed; internal server error', 500);
+            }
+        } else {
+            return new Response('Invalid request; ' .$data, 400);
+        }
     }
 }
