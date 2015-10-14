@@ -91,7 +91,7 @@ class HouseController extends Controller
         $zipcode = $data['zipcode'];
         $main_image = $data['main_image'];
         $bed_number = $data['bed_number'];
-        // $bath_number = $data['bath_number'];
+        $bath_number = $data['bath_number'];
         $asking_price = $data['asking_price'];
         $extras = $data['extras'];
 
@@ -101,8 +101,8 @@ class HouseController extends Controller
         if(empty($Errors)){
 
           $db = $this->get('db');
-          $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, asking_price, extras)
-          VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$asking_price.'", "'.$extras.'");');
+          $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras)
+          VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$bath_number.'", "'.$asking_price.'", "'.$extras.'");');
           $db->query();
 
           $message = array('Inserted record with ID'=> $db->getLastInsertId());
@@ -185,16 +185,16 @@ class HouseController extends Controller
         };
 
 
-        //checks the main_image from the inputed data
-        if (empty($data['main_image'])) {
-
-           array_push( $houseErrors, array('main_image_empty' => 'The main image is not filled in.'));
-
-        } elseif (filter_var($data['main_image'], FILTER_VALIDATE_URL) == false) {
-
-           array_push( $houseErrors, array('main_image_check_entry' => 'The main image is not correct and must be a url.'));
-
-        };
+        // //checks the main_image from the inputed data
+        // if (empty($data['main_image'])) {
+        //
+        //    array_push( $houseErrors, array('main_image_empty' => 'The main image is not filled in.'));
+        //
+        // } elseif (filter_var($data['main_image'], FILTER_VALIDATE_URL) == false) {
+        //
+        //    array_push( $houseErrors, array('main_image_check_entry' => 'The main image is not correct and must be a url.'));
+        //
+        // };
 
 
         //checks the bed_number from the inputed data
@@ -205,6 +205,20 @@ class HouseController extends Controller
         } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bed_number'])) {
 
            array_push( $houseErrors, array('bed_number_check_entry' => 'The bed number is not correct and must only be 3 numbers.'));
+        //
+        // } elseif (strlen($data['bed_number']) != 3) {
+        //
+        //    array_push( $houseErrors, array('bed_number_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
+
+
+        //checks the bath_number from the inputed data
+        if (empty($data['bath_number'])) {
+
+           array_push( $houseErrors, array('bath_number_empty' => 'The bath number is not filled in.'));
+
+        } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bath_number'])) {
+
+           array_push( $houseErrors, array('bath_number_check_entry' => 'The bath number is not correct and must only be 3 numbers.'));
         //
         // } elseif (strlen($data['bed_number']) != 3) {
         //
