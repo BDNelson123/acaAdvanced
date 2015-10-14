@@ -177,7 +177,7 @@ class HouseController extends Controller
         } elseif (!preg_match("/^[0-9]{5}+$/", $data['zipcode'])) {
 
            array_push( $houseErrors, array('zipcode_check_entry' => 'The zipcode is not correct and must be five numbers.'));
-        //
+
         // } elseif (strlen($data['zipcode']) != 5) {
         //
         //    array_push( $houseErrors, array('zipcode_check_length' => 'The zipcode is not correct and must be under 5 numbers.'));
@@ -205,11 +205,13 @@ class HouseController extends Controller
         } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bed_number'])) {
 
            array_push( $houseErrors, array('bed_number_check_entry' => 'The bed number is not correct and must only be 3 numbers.'));
-        //
-        // } elseif (strlen($data['bed_number']) != 3) {
+
+        }
+        // elseif (strlen($data['bed_number']) != 3) {
         //
         //    array_push( $houseErrors, array('bed_number_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
-
+        //
+        // }
 
         //checks the bath_number from the inputed data
         if (empty($data['bath_number'])) {
