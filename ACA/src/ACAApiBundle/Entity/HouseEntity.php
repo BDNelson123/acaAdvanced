@@ -48,6 +48,11 @@ class HouseEntity
     protected $bedNumber;
 
     /**
+    * @ORM\Column(type="string", length=255)
+    */
+    protected $bathNumber;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $askingPrice;
