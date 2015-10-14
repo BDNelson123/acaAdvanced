@@ -15,7 +15,7 @@ class HouseEntity
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $houseId;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
