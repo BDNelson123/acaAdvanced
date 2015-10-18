@@ -38,7 +38,7 @@ class HouseEntity
     protected $zipcode;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="string", length=255)
      */
     protected $mainimage;
 
