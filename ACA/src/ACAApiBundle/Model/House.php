@@ -13,10 +13,10 @@ class House
     protected $city;
     protected $state;
     protected $zipcode;
-    protected $main_image;
-    protected $bed_number;
-    protected $bath_number;
-    protected $asking_price;
+    protected $mainimage;
+    protected $bednumber;
+    protected $bathnumber;
+    protected $askingprice;
     protected $extras;
 
 
@@ -154,21 +154,21 @@ class House
      *
      * @return mixed
      */
-    public function getMainImage()
+    public function getmainimage()
     {
-        return $this->main_image;
+        return $this->mainimage;
     }
 
     /**
      * Set the value of Main Image
      *
-     * @param mixed main_image
+     * @param mixed mainimage
      *
      * @return self
      */
-    public function setMainImage($main_image)
+    public function setmainimage($mainimage)
     {
-        $this->main_image = $main_image;
+        $this->mainimage = $mainimage;
 
         return $this;
     }
@@ -178,21 +178,21 @@ class House
      *
      * @return mixed
      */
-    public function getBedNumber()
+    public function getbednumber()
     {
-        return $this->bed_number;
+        return $this->bednumber;
     }
 
     /**
      * Set the value of Bed Number
      *
-     * @param mixed bed_number
+     * @param mixed bednumber
      *
      * @return self
      */
-    public function setBedNumber($bed_number)
+    public function setbednumber($bednumber)
     {
-        $this->bed_number = $bed_number;
+        $this->bednumber = $bednumber;
 
         return $this;
     }
@@ -204,19 +204,19 @@ class House
      */
     public function getBathNumber()
     {
-        return $this->bath_number;
+        return $this->bathnumber;
     }
 
     /**
      * Set the value of Bath Number
      *
-     * @param mixed bath_number
+     * @param mixed bathnumber
      *
      * @return self
      */
-    public function setBathNumber($bath_number)
+    public function setBathNumber($bathnumber)
     {
-        $this->bath_number = $bath_number;
+        $this->bathnumber = $bathnumber;
 
         return $this;
     }
@@ -228,19 +228,19 @@ class House
      */
     public function getAskingPrice()
     {
-        return $this->asking_price;
+        return $this->askingprice;
     }
 
     /**
      * Set the value of Asking Price
      *
-     * @param mixed asking_price
+     * @param mixed askingprice
      *
      * @return self
      */
-    public function setAskingPrice($asking_price)
+    public function setAskingPrice($askingprice)
     {
-        $this->asking_price = $asking_price;
+        $this->askingprice = $askingprice;
 
         return $this;
     }
@@ -275,5 +275,5 @@ class House
          * @return array
          */
 
-    
+
 }

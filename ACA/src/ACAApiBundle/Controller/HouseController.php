@@ -4,6 +4,7 @@ namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\House;
+use ACAApiBundle\Entity\HouseEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,8 +55,19 @@ class HouseController extends Controller
     {
 
         //data queries the database for house for the specific
-        $data = $this->get('rest_service')->get('house', $slug);
+        // $data = $this->get('rest_service')->get('house', $slug);
 
+        $house = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:HouseEntity')
+            ->find($slug);
+
+        if (!$house) {
+        throw $this->createNotFoundException(
+            'No product found for house '.$house
+        );
+    };
+
+        $data = $house->getData();
 
         //message if there is an error in getting the query
         $error = array('Error'=>'No record house ' . $slug . ' found.');
@@ -89,10 +101,10 @@ class HouseController extends Controller
         $city = $data['city'];
         $state = $data['state'];
         $zipcode = $data['zipcode'];
-        $main_image = $data['main_image'];
-        $bed_number = $data['bed_number'];
-        $bath_number = $data['bath_number'];
-        $asking_price = $data['asking_price'];
+        $mainimage = $data['mainimage'];
+        $bednumber = $data['bednumber'];
+        $bathnumber = $data['bathnumber'];
+        $askingprice = $data['askingprice'];
         $extras = $data['extras'];
 
 
@@ -101,8 +113,8 @@ class HouseController extends Controller
         if(empty($Errors)){
 
           $db = $this->get('db');
-          $db->setQuery('INSERT INTO house (address, city, state, zipcode, main_image, bed_number, bath_number, asking_price, extras)
-          VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$main_image.'", "'.$bed_number.'", "'.$bath_number.'", "'.$asking_price.'", "'.$extras.'");');
+          $db->setQuery('INSERT INTO house (address, city, state, zipcode, mainimage, bednumber, bathnumber, askingprice, extras)
+          VALUES("'.$address.'", "'.$city.'", "'.$state.'", "'.$zipcode.'", "'.$mainimage.'", "'.$bednumber.'", "'.$bathnumber.'", "'.$askingprice.'", "'.$extras.'");');
           $db->query();
 
           $message = array('Inserted record with ID'=> $db->getLastInsertId());
@@ -185,61 +197,61 @@ class HouseController extends Controller
         };
 
 
-        // //checks the main_image from the inputed data
-        // if (empty($data['main_image'])) {
+        // //checks the mainimage from the inputed data
+        // if (empty($data['mainimage'])) {
         //
-        //    array_push( $houseErrors, array('main_image_empty' => 'The main image is not filled in.'));
+        //    array_push( $houseErrors, array('mainimage_empty' => 'The main image is not filled in.'));
         //
-        // } elseif (filter_var($data['main_image'], FILTER_VALIDATE_URL) == false) {
+        // } elseif (filter_var($data['mainimage'], FILTER_VALIDATE_URL) == false) {
         //
-        //    array_push( $houseErrors, array('main_image_check_entry' => 'The main image is not correct and must be a url.'));
+        //    array_push( $houseErrors, array('mainimage_check_entry' => 'The main image is not correct and must be a url.'));
         //
         // };
 
 
-        //checks the bed_number from the inputed data
-        if (empty($data['bed_number'])) {
+        //checks the bednumber from the inputed data
+        if (empty($data['bednumber'])) {
 
-           array_push( $houseErrors, array('bed_number_empty' => 'The bed number is not filled in.'));
+           array_push( $houseErrors, array('bednumber_empty' => 'The bed number is not filled in.'));
 
-        } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bed_number'])) {
+        } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bednumber'])) {
 
-           array_push( $houseErrors, array('bed_number_check_entry' => 'The bed number is not correct and must only be 3 numbers.'));
+           array_push( $houseErrors, array('bednumber_check_entry' => 'The bed number is not correct and must only be 3 numbers.'));
 
         }
-        // elseif (strlen($data['bed_number']) != 3) {
+        // elseif (strlen($data['bednumber']) != 3) {
         //
-        //    array_push( $houseErrors, array('bed_number_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
+        //    array_push( $houseErrors, array('bednumber_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
         //
         // }
 
-        //checks the bath_number from the inputed data
-        if (empty($data['bath_number'])) {
+        //checks the bathnumber from the inputed data
+        if (empty($data['bathnumber'])) {
 
-           array_push( $houseErrors, array('bath_number_empty' => 'The bath number is not filled in.'));
+           array_push( $houseErrors, array('bathnumber_empty' => 'The bath number is not filled in.'));
 
-        } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bath_number'])) {
+        } elseif (!preg_match("/^[0-9\\.]{3}+$/", $data['bathnumber'])) {
 
-           array_push( $houseErrors, array('bath_number_check_entry' => 'The bath number is not correct and must only be 3 numbers.'));
+           array_push( $houseErrors, array('bathnumber_check_entry' => 'The bath number is not correct and must only be 3 numbers.'));
         //
-        // } elseif (strlen($data['bed_number']) != 3) {
+        // } elseif (strlen($data['bednumber']) != 3) {
         //
-        //    array_push( $houseErrors, array('bed_number_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
+        //    array_push( $houseErrors, array('bednumber_check_length_over' => 'The bed number is not correct and must only be 3 numbers.'));
 
         };
 
-        //checks the asking_price from the inputed data
-        if (empty($data['asking_price'])) {
+        //checks the askingprice from the inputed data
+        if (empty($data['askingprice'])) {
 
-           array_push( $houseErrors, array('asking_price_empty' => 'The asking price is not filled in.'));
+           array_push( $houseErrors, array('askingprice_empty' => 'The asking price is not filled in.'));
 
-        } elseif (!preg_match("/^[0-9\\,]+$/", $data['asking_price'])) {
+        } elseif (!preg_match("/^[0-9\\,]+$/", $data['askingprice'])) {
 
-           array_push( $houseErrors, array('asking_price_check_entry' => 'The asking price is not correct and must only be numbers.'));
+           array_push( $houseErrors, array('askingprice_check_entry' => 'The asking price is not correct and must only be numbers.'));
 
-        } elseif (strlen($data['asking_price']) >= 10 ) {
+        } elseif (strlen($data['askingprice']) >= 10 ) {
 
-           array_push( $houseErrors, array('asking_price_check_length_over' => 'The asking price is not correct and must under $99,999,999.'));
+           array_push( $houseErrors, array('askingprice_check_length_over' => 'The asking price is not correct and must under $99,999,999.'));
 
         };
 
@@ -278,10 +290,10 @@ class HouseController extends Controller
         $city = $data['city'];
         $state = $data['state'];
         $zipcode = $data['zipcode'];
-        $main_image = $data['main_image'];
-        $bed_number = $data['bed_number'];
-        $bath_number = $data['bath_number'];
-        $asking_price = $data['asking_price'];
+        $mainimage = $data['mainimage'];
+        $bednumber = $data['bednumber'];
+        $bathnumber = $data['bathnumber'];
+        $askingprice = $data['askingprice'];
         $extras = $data['extras'];
 
         $Errors = $this->houseErrors($data);
@@ -292,7 +304,7 @@ class HouseController extends Controller
         if(empty($Errors)){
 
           $db = $this->get('db');
-          $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", main_image="'.$main_image.'", bed_number="'.$bed_number.'", bath_number="'.$bath_number.'", asking_price="'.$asking_price.'", extras="'.$extras.'" WHERE house_id='.$slug.';');
+          $db->setQuery('UPDATE house SET adrress="'.$address.'", city="'.$city.'", state="'.$state.'", zipcode="'.$zipcode.'", mainimage="'.$mainimage.'", bednumber="'.$bednumber.'", bathnumber="'.$bathnumber.'", askingprice="'.$askingprice.'", extras="'.$extras.'" WHERE house_id='.$slug.';');
           $db->query();
 
           $response = new JsonResponse();
