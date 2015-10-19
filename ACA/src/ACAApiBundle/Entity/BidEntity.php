@@ -36,4 +36,20 @@ class BidEntity
      * @ORM\Column(type="datetime")
      */
     protected $biddate;
+
+    protected $fields = array('id', 'houseid', 'userid', 'bidamount', 'biddate');
+
+    /**
+     *
+     */
+    public function getData()
+    {
+        $data =[];
+
+        foreach($this->fields as $field) {
+            $data[$field] = $this->{$field};
+        }
+
+        return $data;
+    }
 }

@@ -6,6 +6,7 @@ namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\Bid;
+use ACAApiBundle\Entity\BidEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,16 +93,18 @@ class BidController extends Controller
     public function showAction($slug)
     {
         $response = new JsonResponse();
-        $data = $this->get('rest_service')->get('bid', $slug);
+        // $data = $this->get('rest_service')->get('bid', $slug);
 
-        if ($data) {
+        $bid = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:BidEntity')
+            ->find($slug);
 
-            $response->setData($data);
-
-        } else {
-
+        if (!$bid) {
             $response->setStatusCode(400)->setData(array('message' => 'No record found'));
         }
+
+        $response->setData($bid->getData());
+
         return $response;
     }
 
