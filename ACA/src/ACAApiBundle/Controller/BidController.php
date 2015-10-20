@@ -112,11 +112,23 @@ class BidController extends Controller
     {
         $response = new JsonResponse();
         $data = json_decode($request->getContent(), true);
+        $data['biddate'] = new \DateTime($data['biddate']);
         $errors = $this->bidErrors($request);
 
         if(empty($errors)) {
 
-            $this->get('rest_service')->post('bid', $data);
+            // $this->get('rest_service')->post('bid', $data);
+
+            $em = $this->getDoctrine()->getManager();
+            $bid = new BidEntity();
+            $bid->setData($data);
+//            $bid->setUserId($data['userid']);
+//            $bid->setHouseId($data['houseid']);
+//            $bid->setBidAmount($data['bidamount']);
+//            $bid->setBidDate($data['biddate']);
+
+            $em->persist($bid);
+            $em->flush();
 
             $db = $this->get('db');
 

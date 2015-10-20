@@ -2,19 +2,22 @@
 
 namespace ACAApiBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Util\Inflector;
+
+/**
+ * @ORM\MappedSuperclass()
+ */
 class ACABaseEntity
 {
-    protected $bidFields = array('id', 'houseid', 'userid', 'bidamount', 'biddate');
-    protected $houseFields = array('id', 'address', 'city', 'state', 'zipcode', 'main_image', 'bed_number', 'bath_number', 'asking_price', 'extras');
-
     /**
-     *
+     * @return array
      */
-    public function getBidData()
+    public function getData()
     {
         $data =[];
 
-        foreach($this->bidFields as $field) {
+        foreach($this->fields as $field) {
             $data[$field] = $this->{$field};
         }
 
@@ -22,16 +25,27 @@ class ACABaseEntity
     }
 
     /**
-     *
+     * @param $data
      */
-    public function getHouseData()
+    public function setData($data)
     {
-        $data =[];
+//        $data = ['userid', 'houseid', 'bidamount', 'biddate'];
+//        $this->setUserId($data['userid']);
+//        $this->setHouseId($data['houseid']);
+//        $this->setBidAmount($data['bidamount']);
 
-        foreach($this->houseFields as $field) {
-            $data[$field] = $this->{$field};
+        foreach($data as $field => $value) {
+            echo $field;
+            echo $value;
         }
 
         return $data;
     }
 }
+
+/*
+ * 1) $data->name == $data->{"name"}
+ * 2) $variable = function;
+ *      $variable();
+ * 3) 
+ */

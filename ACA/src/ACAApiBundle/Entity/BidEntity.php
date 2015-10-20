@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="bid")
  */
-class BidEntity
+class BidEntity extends ACABaseEntity
 {
     /**
      * @ORM\Id
@@ -40,16 +40,34 @@ class BidEntity
     protected $fields = array('id', 'houseid', 'userid', 'bidamount', 'biddate');
 
     /**
-     *
+     * @param mixed $userid
      */
-    public function getData()
+    public function setUserId($userid)
     {
-        $data =[];
+        $this->userid = $userid;
+    }
 
-        foreach($this->fields as $field) {
-            $data[$field] = $this->{$field};
-        }
+    /**
+     * @param mixed $houseid
+     */
+    public function setHouseId($houseid)
+    {
+        $this->houseid = $houseid;
+    }
 
-        return $data;
+    /**
+     * @param mixed $bidamount
+     */
+    public function setBidAmount($bidamount)
+    {
+        $this->bidamount = $bidamount;
+    }
+
+    /**
+     * @param mixed $biddate
+     */
+    public function setBidDate($biddate)
+    {
+        $this->biddate = $biddate;
     }
 }
