@@ -29,25 +29,15 @@ class ACABaseEntity
      */
     public function setData($data)
     {
-//        $data = ['user_id', 'house_id', 'bid_amount', 'bid_date'];
-//        $this->setuser_id($data['user_id']);
-//        $this->sethouse_id($data['house_id']);
-//        $this->setbid_amount($data['bid_amount']);
-          $insert = 'set' . Inflector::camelize($data);
-
         foreach($data as $field => $value) {
-          $insert = str_replace('-', ' ', $field);
-          $insert = 'set' . Inflector::camelize($data);
-          $bid->setuser_id($data['user_id']);
-          //            $bid->sethouse_id($data['house_id']);
-          //            $bid->setbid_amount($data['bid_amount']);
-          //            $bid->setbid_date($data['bid_date']);
-
-                      $em->persist($bid);
-                      $em->flush();
+            $insert = Inflector::camelize(str_replace('_', ' ', $field));
+            $insert = ucfirst($insert);
+            $insert = 'set' . $insert;
+            $this->$insert($data[$field]);
         }
 
         return $data;
+
     }
 }
 

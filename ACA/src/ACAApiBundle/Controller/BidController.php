@@ -117,15 +117,9 @@ class BidController extends Controller
 
         if(empty($errors)) {
 
-            // $this->get('rest_service')->post('bid', $data);
-
             $em = $this->getDoctrine()->getManager();
             $bid = new BidEntity();
             $bid->setData($data);
-//            $bid->setuser_id($data['user_id']);
-//            $bid->sethouse_id($data['house_id']);
-//            $bid->setbid_amount($data['bid_amount']);
-//            $bid->setbid_date($data['bid_date']);
 
             $em->persist($bid);
             $em->flush();
