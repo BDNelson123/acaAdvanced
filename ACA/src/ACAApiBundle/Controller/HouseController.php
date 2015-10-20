@@ -4,6 +4,7 @@ namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\House;
+use ACAApiBundle\Entity\HouseEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,8 +55,19 @@ class HouseController extends Controller
     {
 
         //data queries the database for house for the specific
-        $data = $this->get('rest_service')->get('house', $slug);
+        // $data = $this->get('rest_service')->get('house', $slug);
 
+        $house = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:HouseEntity')
+            ->find($slug);
+
+        if (!$house) {
+        throw $this->createNotFoundException(
+            'No product found for house '.$house
+        );
+    };
+
+        $data = $house->getHouseData();
 
         //message if there is an error in getting the query
         $error = array('Error'=>'No record house ' . $slug . ' found.');

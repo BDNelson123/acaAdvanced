@@ -8,7 +8,7 @@ namespace ACAApiBundle\Model;
  */
 class House
 {
-    protected $house_id;
+    protected $id;
     protected $address;
     protected $city;
     protected $state;
@@ -23,8 +23,8 @@ class House
         /**
          * @param $id
          */
-        public function __construct($house_id) {
-            $this->house_id = $house_id;
+        public function __construct($id) {
+            $this->id = $id;
         }
 
 
@@ -36,19 +36,19 @@ class House
      */
     public function getHouseId()
     {
-        return $this->house_id;
+        return $this->id;
     }
 
     /**
      * Set the value of Class House
      *
-     * @param mixed house_id
+     * @param mixed id
      *
      * @return self
      */
-    public function setHouseId($house_id)
+    public function setHouseId($id)
     {
-        $this->house_id = $house_id;
+        $this->id = $id;
 
         return $this;
     }
@@ -154,7 +154,7 @@ class House
      *
      * @return mixed
      */
-    public function getMainImage()
+    public function getmain_image()
     {
         return $this->main_image;
     }
@@ -166,7 +166,7 @@ class House
      *
      * @return self
      */
-    public function setMainImage($main_image)
+    public function setmain_image($main_image)
     {
         $this->main_image = $main_image;
 
@@ -178,7 +178,7 @@ class House
      *
      * @return mixed
      */
-    public function getBedNumber()
+    public function getbed_number()
     {
         return $this->bed_number;
     }
@@ -190,7 +190,7 @@ class House
      *
      * @return self
      */
-    public function setBedNumber($bed_number)
+    public function setbed_number($bed_number)
     {
         $this->bed_number = $bed_number;
 
@@ -202,7 +202,7 @@ class House
      *
      * @return mixed
      */
-    public function getBathNumber()
+    public function getbath_number()
     {
         return $this->bath_number;
     }
@@ -214,7 +214,7 @@ class House
      *
      * @return self
      */
-    public function setBathNumber($bath_number)
+    public function setbath_number($bath_number)
     {
         $this->bath_number = $bath_number;
 
@@ -226,7 +226,7 @@ class House
      *
      * @return mixed
      */
-    public function getAskingPrice()
+    public function getasking_price()
     {
         return $this->asking_price;
     }
@@ -238,7 +238,7 @@ class House
      *
      * @return self
      */
-    public function setAskingPrice($asking_price)
+    public function setasking_price($asking_price)
     {
         $this->asking_price = $asking_price;
 
@@ -275,5 +275,5 @@ class House
          * @return array
          */
 
-    
+
 }
