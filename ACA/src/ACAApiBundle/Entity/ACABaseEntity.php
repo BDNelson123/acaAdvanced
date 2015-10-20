@@ -36,8 +36,8 @@ class ACABaseEntity
           $insert = 'set' . Inflector::camelize($data);
 
         foreach($data as $field => $value) {
-
-
+          $insert = str_replace('-', ' ', $field);
+          $insert = 'set' . Inflector::camelize($data);
           $bid->setuser_id($data['user_id']);
           //            $bid->sethouse_id($data['house_id']);
           //            $bid->setbid_amount($data['bid_amount']);
