@@ -18,12 +18,12 @@ class User
      * @var string
      * @Assert\NotBlank()
      */
-    protected $lastname;
+    protected $last_name;
     /**
      * @var string
      * @Assert\NotBlank()
      */
-    protected $firstname;
+    protected $first_name;
     /**
      * @var string
      * @Assert\NotBlank()
@@ -44,33 +44,33 @@ class User
     /**
      * @return mixed
      */
-    public function getLastname()
+    public function getlast_name()
     {
-        return $this->lastname;
+        return $this->last_name;
     }
 
     /**
-     * @param mixed $lastname
+     * @param mixed $last_name
      */
-    public function setLastname($lastname)
+    public function setlast_name($last_name)
     {
-        $this->lastname = $lastname;
+        $this->last_name = $last_name;
     }
 
     /**
      * @return mixed
      */
-    public function getFirstname()
+    public function getfirst_name()
     {
-        return $this->firstname;
+        return $this->first_name;
     }
 
     /**
-     * @param mixed $firstname
+     * @param mixed $first_name
      */
-    public function setFirstname($firstname)
+    public function setfirst_name($first_name)
     {
-        $this->firstname = $firstname;
+        $this->first_name = $first_name;
     }
 
     /**
@@ -118,8 +118,8 @@ class User
         }
 
         // If it's missing needed fields ...
-        if (empty($data['email']) || empty($data['lastname']) || empty($data['firstname'])) {
-            return 'Missing required fields: "email", "lastname", "firstname"';
+        if (empty($data['email']) || empty($data['last_name']) || empty($data['first_name'])) {
+            return 'Missing required fields: "email", "last_name", "first_name"';
         }
 
         // If the email isn't a valid email ...
@@ -143,9 +143,9 @@ class User
         }
 
         // If it's missing needed fields ...
-        if (empty($data['email']) && empty($data['lastname']) &&
-                empty($data['firstname']) && empty($data['role'])) {
-            return 'Request contained no valid field (e.g. "email", "lastname", "firstname", "role")';
+        if (empty($data['email']) && empty($data['last_name']) &&
+                empty($data['first_name']) && empty($data['role'])) {
+            return 'Request contained no valid field (e.g. "email", "last_name", "first_name", "role")';
         }
 
         // If the email isn't a valid email ...

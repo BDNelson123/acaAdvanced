@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20151020013832 extends AbstractMigration
+class Version20151020024219 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -19,7 +19,8 @@ class Version20151020013832 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE bid ADD user_id INT NOT NULL, ADD house_id INT NOT NULL, ADD bid_amount INT NOT NULL, DROP userid, DROP houseid, DROP bidamount, CHANGE biddate bid_date DATETIME NOT NULL');
-        $this->addSql('ALTER TABLE house CHANGE city city VARCHAR(50) NOT NULL, CHANGE state state VARCHAR(2) NOT NULL, CHANGE zipcode zipcode INT NOT NULL, CHANGE bed_number bed_number NUMERIC(10, 1) NOT NULL, CHANGE bath_number bath_number NUMERIC(10, 1) NOT NULL, CHANGE asking_price asking_price NUMERIC(10, 2) NOT NULL, CHANGE extras extras LONGTEXT NOT NULL');
+        $this->addSql('ALTER TABLE house ADD main_image VARCHAR(255) NOT NULL, ADD bed_number NUMERIC(10, 1) NOT NULL, ADD bath_number NUMERIC(10, 1) NOT NULL, DROP mainimage, DROP bednumber, DROP bathnumber, CHANGE askingprice asking_price NUMERIC(10, 2) NOT NULL');
+        $this->addSql('ALTER TABLE user ADD first_name VARCHAR(255) NOT NULL, ADD last_name VARCHAR(255) NOT NULL, DROP firstname, DROP lastname');
     }
 
     /**
@@ -31,6 +32,7 @@ class Version20151020013832 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE bid ADD userid INT NOT NULL, ADD houseid INT NOT NULL, ADD bidamount INT NOT NULL, DROP user_id, DROP house_id, DROP bid_amount, CHANGE bid_date biddate DATETIME NOT NULL');
-        $this->addSql('ALTER TABLE house CHANGE city city VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE state state VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE zipcode zipcode VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE bed_number bed_number VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE bath_number bath_number VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE asking_price asking_price VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, CHANGE extras extras VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci');
+        $this->addSql('ALTER TABLE house ADD mainimage LONGBLOB NOT NULL, ADD bednumber NUMERIC(10, 1) NOT NULL, ADD bathnumber NUMERIC(10, 1) NOT NULL, DROP main_image, DROP bed_number, DROP bath_number, CHANGE asking_price askingprice NUMERIC(10, 2) NOT NULL');
+        $this->addSql('ALTER TABLE user ADD firstname VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, ADD lastname VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, DROP first_name, DROP last_name');
     }
 }
