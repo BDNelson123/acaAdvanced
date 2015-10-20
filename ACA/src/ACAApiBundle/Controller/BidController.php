@@ -6,6 +6,7 @@ namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Services\DBCommon;
 use ACAApiBundle\Model\Bid;
+use ACAApiBundle\Entity\BidEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,16 +93,18 @@ class BidController extends Controller
     public function showAction($slug)
     {
         $response = new JsonResponse();
-        $data = $this->get('rest_service')->get('bid', $slug);
+        // $data = $this->get('rest_service')->get('bid', $slug);
 
-        if ($data) {
+        $bid = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:BidEntity')
+            ->find($slug);
 
-            $response->setData($data);
-
-        } else {
-
+        if (!$bid) {
             $response->setStatusCode(400)->setData(array('message' => 'No record found'));
         }
+
+        $response->setData($bid->getData());
+
         return $response;
     }
 
@@ -109,11 +112,23 @@ class BidController extends Controller
     {
         $response = new JsonResponse();
         $data = json_decode($request->getContent(), true);
+        $data['biddate'] = new \DateTime($data['biddate']);
         $errors = $this->bidErrors($request);
 
         if(empty($errors)) {
 
-            $this->get('rest_service')->post('bid', $data);
+            // $this->get('rest_service')->post('bid', $data);
+
+            $em = $this->getDoctrine()->getManager();
+            $bid = new BidEntity();
+            $bid->setData($data);
+//            $bid->setUserId($data['userid']);
+//            $bid->setHouseId($data['houseid']);
+//            $bid->setBidAmount($data['bidamount']);
+//            $bid->setBidDate($data['biddate']);
+
+            $em->persist($bid);
+            $em->flush();
 
             $db = $this->get('db');
 
