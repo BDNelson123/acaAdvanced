@@ -40,35 +40,35 @@ class HouseEntity
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $mainimage;
+    protected $main_image;
 
     /**
      * @ORM\Column(type="decimal", scale=1)
      */
-    protected $bednumber;
+    protected $bed_number;
 
     /**
     * @ORM\Column(type="decimal", scale=1)
     */
-    protected $bathnumber;
+    protected $bath_number;
 
     /**
      * @ORM\Column(type="decimal", scale=2)
      */
-    protected $askingprice;
+    protected $asking_price;
 
     /**
      * @ORM\Column(type="text")
      */
     protected $extras;
 
-    protected $fields = array('id', 'address', 'city', 'mainimage', 'bednumber', 'bathnumber', 'askingprice', 'extra');
+    protected $Fields = array('id', 'address', 'city', 'state', 'zipcode', 'main_image', 'bed_number', 'bath_number', 'asking_price', 'extras');
 
     public function getData()
     {
       $data = [];
 
-      foreach ($this->fields as $field) {
+      foreach ($this->Fields as $field) {
         $data[$field] = $this->$field;
       }
 

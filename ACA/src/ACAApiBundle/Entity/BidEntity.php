@@ -20,54 +20,54 @@ class BidEntity extends ACABaseEntity
     /**
      * @ORM\Column(type="integer")
      */
-    protected $userid;
+    protected $user_id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $houseid;
+    protected $house_id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $bidamount;
+    protected $bid_amount;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $biddate;
+    protected $bid_date;
 
-    protected $fields = array('id', 'houseid', 'userid', 'bidamount', 'biddate');
+    protected $fields = array('id', 'house_id', 'user_id', 'bid_amount', 'bid_date');
 
     /**
-     * @param mixed $userid
+     * @param mixed $user_id
      */
-    public function setUserId($userid)
+    public function setuser_id($user_id)
     {
-        $this->userid = $userid;
+        $this->user_id = $user_id;
     }
 
     /**
-     * @param mixed $houseid
+     * @param mixed $house_id
      */
-    public function setHouseId($houseid)
+    public function sethouse_id($house_id)
     {
-        $this->houseid = $houseid;
+        $this->house_id = $house_id;
     }
 
     /**
-     * @param mixed $bidamount
+     * @param mixed $bid_amount
      */
-    public function setBidAmount($bidamount)
+    public function setbid_amount($bid_amount)
     {
-        $this->bidamount = $bidamount;
+        $this->bid_amount = $bid_amount;
     }
 
     /**
-     * @param mixed $biddate
+     * @param mixed $bid_date
      */
-    public function setBidDate($biddate)
+    public function setbid_date($bid_date)
     {
-        $this->biddate = $biddate;
+        $this->bid_date = $bid_date;
     }
 }

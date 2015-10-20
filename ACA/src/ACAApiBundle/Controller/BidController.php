@@ -27,36 +27,36 @@ class BidController extends Controller
     public function bidErrors(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        $userid = $data['userid'];
-        $houseid = $data['houseid'];
-        $bidamount = $data['bidamount'];
-        $biddate = $data['biddate'];
+        $user_id = $data['user_id'];
+        $house_id = $data['house_id'];
+        $bid_amount = $data['bid_amount'];
+        $bid_date = $data['bid_date'];
         $errors = [];
 
-        // Check if userid has been inputted
-        if(empty($userid)) {
-            $errors['userid'] = 'Please provide a userid.';
+        // Check if user_id has been inputted
+        if(empty($user_id)) {
+            $errors['user_id'] = 'Please provide a user_id.';
         }
 
-        // Check to see if userid exists
-        if(!($this->get('rest_service')->get('user', $userid))) {
-            $errors['userid'] = 'This userid does not exist.';
+        // Check to see if user_id exists
+        if(!($this->get('rest_service')->get('user', $user_id))) {
+            $errors['user_id'] = 'This user_id does not exist.';
         }
 
-        // Add check to see if existing houseid
-        if(empty($houseid)) {
-            $errors['houseid'] = 'Please provide a houseid.';
+        // Add check to see if existing house_id
+        if(empty($house_id)) {
+            $errors['house_id'] = 'Please provide a house_id.';
         }
 
-        // Check to see if houseid exists
-        if(!($this->get('rest_service')->get('house', $houseid))) {
-            $errors['houseid'] = 'This houseid does not exist.';
+        // Check to see if house_id exists
+        if(!($this->get('rest_service')->get('house', $house_id))) {
+            $errors['house_id'] = 'This house_id does not exist.';
         }
 
-        if(!empty($bidamount) && ($bidamount < 1000 || $bidamount > 99999999)) {
-            $errors['bidamount'] = 'Please provide a realistic bid amount.';
-        } elseif(empty($bidamount)) {
-            $errors['bidamount'] = 'Please provide a bid amount.';
+        if(!empty($bid_amount) && ($bid_amount < 1000 || $bid_amount > 99999999)) {
+            $errors['bid_amount'] = 'Please provide a realistic bid amount.';
+        } elseif(empty($bid_amount)) {
+            $errors['bid_amount'] = 'Please provide a bid amount.';
         }
 
         return $errors;
@@ -112,7 +112,7 @@ class BidController extends Controller
     {
         $response = new JsonResponse();
         $data = json_decode($request->getContent(), true);
-        $data['biddate'] = new \DateTime($data['biddate']);
+        $data['bid_date'] = new \DateTime($data['bid_date']);
         $errors = $this->bidErrors($request);
 
         if(empty($errors)) {
@@ -122,10 +122,10 @@ class BidController extends Controller
             $em = $this->getDoctrine()->getManager();
             $bid = new BidEntity();
             $bid->setData($data);
-//            $bid->setUserId($data['userid']);
-//            $bid->setHouseId($data['houseid']);
-//            $bid->setBidAmount($data['bidamount']);
-//            $bid->setBidDate($data['biddate']);
+//            $bid->setuser_id($data['user_id']);
+//            $bid->sethouse_id($data['house_id']);
+//            $bid->setbid_amount($data['bid_amount']);
+//            $bid->setbid_date($data['bid_date']);
 
             $em->persist($bid);
             $em->flush();
@@ -164,7 +164,7 @@ class BidController extends Controller
 //                // ... whoops, bad SQL query
 //            }
 //        } else {
-//            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "userid", "houseid", "bidamount"');
+//            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "user_id", "house_id", "bid_amount"');
 //            // ... the request didn't validate so $data was false
 //        }
 //        return $response;

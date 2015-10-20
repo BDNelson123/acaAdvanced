@@ -67,7 +67,7 @@ class HouseController extends Controller
         );
     };
 
-        $data = $house->getData();
+        $data = $house->getHouseData();
 
         //message if there is an error in getting the query
         $error = array('Error'=>'No record house ' . $slug . ' found.');

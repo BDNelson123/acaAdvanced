@@ -8,23 +8,23 @@ namespace ACAApiBundle\Model;
  */
 class House
 {
-    protected $house_id;
+    protected $id;
     protected $address;
     protected $city;
     protected $state;
     protected $zipcode;
-    protected $mainimage;
-    protected $bednumber;
-    protected $bathnumber;
-    protected $askingprice;
+    protected $main_image;
+    protected $bed_number;
+    protected $bath_number;
+    protected $asking_price;
     protected $extras;
 
 
         /**
          * @param $id
          */
-        public function __construct($house_id) {
-            $this->house_id = $house_id;
+        public function __construct($id) {
+            $this->id = $id;
         }
 
 
@@ -36,19 +36,19 @@ class House
      */
     public function getHouseId()
     {
-        return $this->house_id;
+        return $this->id;
     }
 
     /**
      * Set the value of Class House
      *
-     * @param mixed house_id
+     * @param mixed id
      *
      * @return self
      */
-    public function setHouseId($house_id)
+    public function setHouseId($id)
     {
-        $this->house_id = $house_id;
+        $this->id = $id;
 
         return $this;
     }
@@ -154,21 +154,21 @@ class House
      *
      * @return mixed
      */
-    public function getmainimage()
+    public function getmain_image()
     {
-        return $this->mainimage;
+        return $this->main_image;
     }
 
     /**
      * Set the value of Main Image
      *
-     * @param mixed mainimage
+     * @param mixed main_image
      *
      * @return self
      */
-    public function setmainimage($mainimage)
+    public function setmain_image($main_image)
     {
-        $this->mainimage = $mainimage;
+        $this->main_image = $main_image;
 
         return $this;
     }
@@ -178,21 +178,21 @@ class House
      *
      * @return mixed
      */
-    public function getbednumber()
+    public function getbed_number()
     {
-        return $this->bednumber;
+        return $this->bed_number;
     }
 
     /**
      * Set the value of Bed Number
      *
-     * @param mixed bednumber
+     * @param mixed bed_number
      *
      * @return self
      */
-    public function setbednumber($bednumber)
+    public function setbed_number($bed_number)
     {
-        $this->bednumber = $bednumber;
+        $this->bed_number = $bed_number;
 
         return $this;
     }
@@ -202,21 +202,21 @@ class House
      *
      * @return mixed
      */
-    public function getBathNumber()
+    public function getbath_number()
     {
-        return $this->bathnumber;
+        return $this->bath_number;
     }
 
     /**
      * Set the value of Bath Number
      *
-     * @param mixed bathnumber
+     * @param mixed bath_number
      *
      * @return self
      */
-    public function setBathNumber($bathnumber)
+    public function setbath_number($bath_number)
     {
-        $this->bathnumber = $bathnumber;
+        $this->bath_number = $bath_number;
 
         return $this;
     }
@@ -226,21 +226,21 @@ class House
      *
      * @return mixed
      */
-    public function getAskingPrice()
+    public function getasking_price()
     {
-        return $this->askingprice;
+        return $this->asking_price;
     }
 
     /**
      * Set the value of Asking Price
      *
-     * @param mixed askingprice
+     * @param mixed asking_price
      *
      * @return self
      */
-    public function setAskingPrice($askingprice)
+    public function setasking_price($asking_price)
     {
-        $this->askingprice = $askingprice;
+        $this->asking_price = $asking_price;
 
         return $this;
     }
