@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="house")
  */
-class HouseEntity
+class HouseEntity extends ACABaseEntity
 {
     /**
      * @ORM\Id
@@ -62,20 +62,7 @@ class HouseEntity
      */
     protected $extras;
 
-    protected $Fields = array('id', 'address', 'city', 'state', 'zipcode', 'main_image', 'bed_number', 'bath_number', 'asking_price', 'extras');
-
-    public function getData()
-    {
-      $data = [];
-
-      foreach ($this->Fields as $field) {
-        $data[$field] = $this->$field;
-      }
-
-      return $data;
-    }
-
-
+    protected $fields = array('id', 'address', 'city', 'state', 'zipcode', 'main_image', 'bed_number', 'bath_number', 'asking_price', 'extras');
 
 
     /**
