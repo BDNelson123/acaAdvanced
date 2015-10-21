@@ -30,20 +30,15 @@ class ACABaseEntity
     public function setData($data)
     {
         foreach($data as $field => $value) {
-            $insert = Inflector::camelize(str_replace('_', ' ', $field));
-            $insert = ucfirst($insert);
-            $insert = 'set' . $insert;
-            $this->$insert($data[$field]);
+
+            //Ex: user_id => user id => userId => UserId => setUserId
+            $setter_method_name = Inflector::camelize(str_replace('_', ' ', $field));
+            $setter_method_name = ucfirst($setter_method_name);
+            $setter_method_name = 'set' . $setter_method_name;
+            $this->$setter_method_name($value);
         }
 
         return $data;
 
     }
 }
-
-/*
- * 1) $data->name == $data->{"name"}
- * 2) $variable = function;
- *      $variable();
- * 3)
- */
