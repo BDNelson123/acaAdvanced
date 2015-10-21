@@ -157,7 +157,9 @@ class BidEntity extends ACABaseEntity
      */
     public function setBidDate($bid_date)
     {
-        $this->bid_date = $bid_date;
+
+        $this->bid_date = new \DateTime($bid_date);
+
 
         return $this;
     }

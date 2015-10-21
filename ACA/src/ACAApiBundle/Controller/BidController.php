@@ -18,10 +18,159 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class BidController extends Controller
 {
+
     /**
-     * Returns an array of errors based on user input for a Bid
+     * @return JsonResponse
+     * This action will get all the data for bids from the database.
+     */
+    public function getAction()
+    {
+        $response = new JsonResponse();
+
+        $bids = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:BidEntity')
+            ->findAll();
+
+        if (!$bids) {
+            $response->setStatusCode(400)
+                ->setData(array(
+                  'message' => 'Index request found no records'
+                ));
+            return $response;
+        }
+
+        $responseSetData = [];
+        foreach($bids as $bid){
+            $responseSetData[] = $bid->getData();
+        };
+        $response->setData($responseSetData);
+        return $response;
+    }
+
+
+    /**
+     * @param $slug
+     * @return Response\JsonResponse
+     * This action will find a particular bid from the database.
+     */
+    public function showAction($slug)
+    {
+        $response = new JsonResponse();
+
+        $bid = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:BidEntity')
+            ->find($slug);
+
+        if (!$bid) {
+            $response->setStatusCode(400)->setData(array(
+              'message' => 'No record found'
+            ));
+            return $response;
+        }
+
+        $response->setData($bid->getData());
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response\JsonResponse
+     * This action will add a particular bid to the database.
+     */
+    public function postAction(Request $request)
+    {
+        $response = new JsonResponse();
+        $data = json_decode($request->getContent(), true);
+        $errors = $this->bidErrors($request);
+
+        if($errors) {
+          $response->setStatusCode(400)->setData($errors);
+          return $response;
+      }
+
+            $em = $this->getDoctrine()->getManager();
+            $bid = new BidEntity();
+            $bid->setData($data);
+            $em->persist($bid);
+            $em->flush();
+
+            $db = $this->get('db');
+            $response->setStatusCode(200)->setData(array(
+                'message' => 'Successfully posted new record',
+                'id' => $db->getLastInsertId()
+                )
+            );
+        return $response;
+    }
+
+
+    /**
+     * @param $slug
+     * @param Request $request
+     * @return Response
+     * This action will update a particular bid already in the database.
+     */
+    public function putAction($slug, Request $request)
+    {
+      $response = new JsonResponse();
+      $data = json_decode($request->getContent(), true);
+      $errors = $this->bidErrors($request);
+
+      if($errors) {
+        $response->setStatusCode(400)->setData($errors);
+        return $response;
+    }
+
+          $em = $this->getDoctrine()->getManager();
+          $bid = $this->getDoctrine()
+              ->getRepository('ACAApiBundle:BidEntity')
+              ->find($slug);
+          $bid->setData($data);
+          $em->persist($bid);
+          $em->flush();
+
+          $db = $this->get('db');
+          $response->setStatusCode(200)->setData(array(
+              'message' => 'Successfully posted new record',
+              'id' => $db->getLastInsertId()
+              ));
+      return $response;
+    }
+
+    /**
+     * @param $slug
+     * @return Response
+     * This action will delete a particular bid already in the database.
+     */
+    public function deleteAction($slug) {
+        $response = new JsonResponse();
+
+        $bid = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:BidEntity')
+            ->find($slug);
+
+        if (!$bid) {
+            $response->setStatusCode(400)->setData(array(
+              'message' => 'No record found'
+              ));
+            return $response;
+        };
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($bid);
+        $em->flush();
+
+        $response->setStatusCode(200)->setData(array(
+          'message' => 'Successfully deleted record ' . $slug
+          ));
+        return $response;
+    }
+
+
+    /**
      * @param Request $request
      * @return array
+     * Returns an array of errors based on user input for a Bid.
      */
     // This will need to be moved to the model, AWAY from the controller.
     public function bidErrors(Request $request)
@@ -60,149 +209,5 @@ class BidController extends Controller
         }
 
         return $errors;
-    }
-
-
-    /**
-     * @return JsonResponse
-     */
-    public function getAction()
-    {
-        $response = new JsonResponse();
-        $data = $this->get('rest_service')->get('bid');
-
-        if ($data) {
-
-            $response->setData($data);
-
-        } else {
-
-            $response->setStatusCode(400)
-                ->setData(array(
-                    'message' => 'Index request found no records'
-                )
-            );
-        }
-        return $response;
-    }
-
-    /**
-     * @param $slug
-     * @return Response\JsonResponse
-     */
-    public function showAction($slug)
-    {
-        $response = new JsonResponse();
-        // $data = $this->get('rest_service')->get('bid', $slug);
-
-        $bid = $this->getDoctrine()
-            ->getRepository('ACAApiBundle:BidEntity')
-            ->find($slug);
-
-        if (!$bid) {
-            $response->setStatusCode(400)->setData(array('message' => 'No record found'));
-        }
-
-        $response->setData($bid->getData());
-
-        return $response;
-    }
-
-    public function postAction(Request $request)
-    {
-        $response = new JsonResponse();
-        $data = json_decode($request->getContent(), true);
-        $data['bid_date'] = new \DateTime($data['bid_date']);
-        $errors = $this->bidErrors($request);
-
-        if(empty($errors)) {
-
-            $em = $this->getDoctrine()->getManager();
-            $bid = new BidEntity();
-            $bid->setData($data);
-
-            $em->persist($bid);
-            $em->flush();
-
-            $db = $this->get('db');
-
-            $response->setStatusCode(200)->setData(
-                array(
-                'message' => 'Successfully posted new record',
-                'id' => $db->getLastInsertId()
-                )
-            );
-
-        } else {
-
-            $response->setStatusCode(400)->setData($errors);
-
-        }
-
-        return $response;
-    }
-
-//    /**
-//     * @param Request $request
-//     * @return Response
-//     */
-//    public function postAction(Request $request)
-//    {
-//        $response = new Response;
-//        $data = Bid::validatePost($request);
-//        if ($data) {
-//            if ($this->get('rest_service')->post('bid', $data))
-//            {
-//                $response->setStatusCode(200)->setContent('Posted new record to /bid');
-//            } else { $response->setStatusCode(500)->setContent('Query failed');
-//                // ... whoops, bad SQL query
-//            }
-//        } else {
-//            $response->setStatusCode(400)->setContent('Invalid request; expected Json with fields "user_id", "house_id", "bid_amount"');
-//            // ... the request didn't validate so $data was false
-//        }
-//        return $response;
-//    }
-
-
-
-    /**
-     * @param $slug
-     * @param Request $request
-     * @return Response
-     */
-    public function putAction($slug, Request $request)
-    {
-        $response = new JsonResponse();
-        $data = json_decode($request->getContent(), true);
-        $errors = $this->bidErrors($request);
-
-        if (empty($errors)) {
-            if ($this->get('rest_service')->put('bid', $slug, $data))
-            {
-                $response->setStatusCode(200)->setData(array('message' => 'Successfully updated record ' .$slug));
-            } else {
-                $response->setStatusCode(500)->setData(array('message' => 'Query failed'));
-            }
-        } else {
-            $response->setStatusCode(400)->setData($errors);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param $slug
-     * @return Response
-     */
-    public function deleteAction($slug) {
-        $response = new Response();
-        if ($this->get('rest_service')->delete('bid', $slug)) {
-            $response->setStatusCode(200)->setData(array('message' => 'Successfully deleted record ' . $slug));
-        } else {
-            $response->setStatusCode(500)->setData(array('message' => 'Query failed'));
-        }
-        return $response;
-
     }
 }
