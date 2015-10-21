@@ -46,6 +46,7 @@ class UserController extends Controller
     }
 
     /**
+     * Find and show a particular user in the user table, based on id (slug).
      * @param $slug
      * @return Response|JsonResponse
      */
@@ -68,24 +69,47 @@ class UserController extends Controller
     }
 
     /**
+     * Add a user to the user table.
      * @param Request $request
-     * @return Response
+     * @return Response\JsonResponse
      */
     public function postAction(Request $request)
     {
-        $response = new Response;
-        $data = User::validatePost($request);
-        if (gettype($data) === 'array') {
-              if ($this->get('rest_service')->post('user', $data))
-              {
-                  $response->setStatusCode(200)->setContent('Posted new record to /user');
-              } else {
-                  $response->setStatusCode(500)->setContent('Request failed; internal server error');
-              }
-        } else {
-            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+        $response = new JsonResponse();
+        $data = json_decode($request->getContent(), true);
+        $errors = $this->userErrors($request);
+
+        if($errors) {
+            $response->setStatusCode(400)->setData($errors);
+            return $response;
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $user = new UserEntity();
+        $user->setData($data);
+        $em->persist($user);
+        $em->flush();
+
+        $response->setStatusCode(200)->setData(array(
+            'message' => 'Successfully posted new user',
+            'id' => $user->getId()
+            )
+        );
+
         return $response;
+
+//        $data = User::validatePost($request);
+//        if (gettype($data) === 'array') {
+//              if ($this->get('rest_service')->post('user', $data))
+//              {
+//                  $response->setStatusCode(200)->setContent('Posted new record to /user');
+//              } else {
+//                  $response->setStatusCode(500)->setContent('Request failed; internal server error');
+//              }
+//        } else {
+//            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+//        }
+//        return $response;
     }
 
     /**

@@ -70,9 +70,9 @@ class BidController extends Controller
     }
 
     /**
+     * Add a bid to the bid table.
      * @param Request $request
      * @return Response\JsonResponse
-     * This action will add a particular bid to the database.
      */
     public function postAction(Request $request)
     {
@@ -92,7 +92,7 @@ class BidController extends Controller
         $em->flush();
 
         $response->setStatusCode(200)->setData(array(
-            'message' => 'Successfully posted new record',
+            'message' => 'Successfully posted new bid',
             'id' => $bid->getId()
             )
         );
