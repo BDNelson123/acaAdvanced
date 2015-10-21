@@ -97,39 +97,44 @@ class UserController extends Controller
         );
 
         return $response;
-
-//        $data = User::validatePost($request);
-//        if (gettype($data) === 'array') {
-//              if ($this->get('rest_service')->post('user', $data))
-//              {
-//                  $response->setStatusCode(200)->setContent('Posted new record to /user');
-//              } else {
-//                  $response->setStatusCode(500)->setContent('Request failed; internal server error');
-//              }
-//        } else {
-//            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
-//        }
-//        return $response;
     }
 
     /**
+     * Update a particular user in the user table, based on id (slug).
      * @param $slug
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function putAction($slug, Request $request) {
-        $response = new Response();
-        $data = User::validatePut($request);
-        if (gettype($data) === 'array') {
-            if ($this->get('rest_service')->put('user', $slug, $data))
-            {
-                $response->setStatusCode(200)->setContent('Succesfully updated record ' .$slug);
-            } else {
-                $response->setStatusCode(500)->setContent('Request failed; internal server error');
-            }
-        } else {
-            $response->setStatusCode(400)->setContent('Invalid request; ' .$data);
+        $response = new JsonResponse();
+        $data = json_decode($request->getContent(), true);
+        $errors = $this->userErrors($request);
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:UserEntity')
+            ->find($slug);
+
+        if(!$user) {
+            $response->setStatusCode(400)->setData(array(
+                'message' => 'No record found for id ' . $slug
+            ));
+            return $response;
         }
+
+        if($errors) {
+            $response->setStatusCode(400)->setData($errors);
+            return $response;
+        }
+
+        $user->setData($data);
+        $em->persist($user);
+        $em->flush();
+
+        $response->setStatusCode(200)->setData(array(
+                'message' => 'Successfully updated user',
+                'id' => $user->getId()
+            )
+        );
         return $response;
     }
 

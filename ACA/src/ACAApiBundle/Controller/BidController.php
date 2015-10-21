@@ -49,7 +49,7 @@ class BidController extends Controller
     /**
      * Find and show a particular bid in the bid table, based on id (slug).
      * @param $slug
-     * @return Response\JsonResponse
+     * @return JsonResponse
      */
     public function showAction($slug)
     {
@@ -72,7 +72,7 @@ class BidController extends Controller
     /**
      * Add a bid to the bid table.
      * @param Request $request
-     * @return Response\JsonResponse
+     * @return JsonResponse
      */
     public function postAction(Request $request)
     {
@@ -102,10 +102,10 @@ class BidController extends Controller
 
 
     /**
-     * This action will update a particular bid already in the database.
+     * Update a particular bid in the bid table, based on id (slug).
      * @param $slug
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function putAction($slug, Request $request)
     {
@@ -127,7 +127,7 @@ class BidController extends Controller
       $em->flush();
 
       $response->setStatusCode(200)->setData(array(
-          'message' => 'Successfully updated record',
+          'message' => 'Successfully updated bid',
           'id' => $bid->getId()
           )
       );
@@ -136,7 +136,7 @@ class BidController extends Controller
 
     /**
      * @param $slug
-     * @return Response
+     * @return JsonResponse
      * This action will delete a particular bid already in the database.
      */
     public function deleteAction($slug) {
