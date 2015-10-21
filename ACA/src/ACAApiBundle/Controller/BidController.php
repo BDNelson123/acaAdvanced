@@ -135,20 +135,19 @@ class BidController extends Controller
     }
 
     /**
+     * Delete a particular bid already in the bid table.
      * @param $slug
      * @return JsonResponse
-     * This action will delete a particular bid already in the database.
      */
     public function deleteAction($slug) {
         $response = new JsonResponse();
-
         $bid = $this->getDoctrine()
             ->getRepository('ACAApiBundle:BidEntity')
             ->find($slug);
 
         if (!$bid) {
             $response->setStatusCode(400)->setData(array(
-              'message' => 'No record found'
+              'message' => 'No record found for id ' . $slug
               ));
             return $response;
         };
@@ -158,7 +157,7 @@ class BidController extends Controller
         $em->flush();
 
         $response->setStatusCode(200)->setData(array(
-          'message' => 'Successfully deleted record ' . $slug
+          'message' => 'Successfully deleted bid ' . $slug
           ));
         return $response;
     }

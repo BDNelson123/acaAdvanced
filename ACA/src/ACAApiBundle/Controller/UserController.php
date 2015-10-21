@@ -3,7 +3,6 @@
 namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Entity\UserEntity;
-use ACAApiBundle\Model\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -139,17 +138,31 @@ class UserController extends Controller
     }
 
     /**
+     * Delete a particular user already in the user table.
      * @param $slug
-     * @return Response
+     * @return JsonResponse
      */
     public function deleteAction($slug)
     {
-        $response = new Response();
-        if ($this->get('rest_service')->delete('user', $slug)) {
-            $response->setStatusCode(200)->setContent('Successfully deleted record ' . $slug);
-        } else {
-            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
+        $response = new JsonResponse();
+        $user = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:UserEntity')
+            ->find($slug);
+
+        if(!$user) {
+            $response->setStatusCode(400)->setData(array(
+                'message' => 'No record found for id ' . $slug
+            ));
+            return $response;
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($user);
+        $em->flush();
+
+        $response->setStatusCode(200)->setData(array(
+            'message' => 'Successfully deleted user ' . $slug
+        ));
         return $response;
     }
 
