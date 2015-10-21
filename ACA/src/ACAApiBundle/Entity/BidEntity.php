@@ -37,10 +37,10 @@ class BidEntity extends ACABaseEntity
      */
     protected $bid_date;
 
+    /**
+     * @var array
+     */
     protected $fields = array('id', 'house_id', 'user_id', 'bid_amount', 'bid_date');
-
-
-
 
     /**
      * Get the value of Id
@@ -55,7 +55,7 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of Id
      *
-     * @param mixed id
+     * @param mixed $id
      *
      * @return self
      */
@@ -79,14 +79,13 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of User Id
      *
-     * @param mixed user_id
+     * @param mixed $user_id
      *
      * @return self
      */
     public function setUserId($user_id)
     {
         $this->user_id = $user_id;
-
         return $this;
     }
 
@@ -103,14 +102,13 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of House Id
      *
-     * @param mixed house_id
+     * @param mixed $house_id
      *
      * @return self
      */
     public function setHouseId($house_id)
     {
         $this->house_id = $house_id;
-
         return $this;
     }
 
@@ -127,14 +125,13 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of Bid Amount
      *
-     * @param mixed bid_amount
+     * @param mixed $bid_amount
      *
      * @return self
      */
     public function setBidAmount($bid_amount)
     {
         $this->bid_amount = $bid_amount;
-
         return $this;
     }
 
@@ -151,16 +148,13 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of Bid Date
      *
-     * @param mixed bid_date
+     * @param mixed $bid_date
      *
      * @return self
      */
     public function setBidDate($bid_date)
     {
-
         $this->bid_date = new \DateTime($bid_date);
-
-
         return $this;
     }
 
@@ -177,14 +171,13 @@ class BidEntity extends ACABaseEntity
     /**
      * Set the value of Fields
      *
-     * @param mixed fields
+     * @param mixed $fields
      *
      * @return self
      */
     public function setFields($fields)
     {
         $this->fields = $fields;
-
         return $this;
     }
 

@@ -4,8 +4,6 @@
 
 namespace ACAApiBundle\Controller;
 
-use ACAApiBundle\Services\DBCommon;
-use ACAApiBundle\Model\Bid;
 use ACAApiBundle\Entity\BidEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,8 +18,8 @@ class BidController extends Controller
 {
 
     /**
+     * Get all data for all bids in the bid table.
      * @return JsonResponse
-     * This action will get all the data for bids from the database.
      */
     public function getAction()
     {
@@ -42,7 +40,8 @@ class BidController extends Controller
         $responseSetData = [];
         foreach($bids as $bid){
             $responseSetData[] = $bid->getData();
-        };
+        }
+
         $response->setData($responseSetData);
         return $response;
     }
@@ -170,9 +169,8 @@ class BidController extends Controller
     /**
      * @param Request $request
      * @return array
-     * Returns an array of errors based on user input for a Bid.
+     * Returns an array of errors (or an empty array) based on user input for a Bid.
      */
-    // This will need to be moved to the model, AWAY from the controller.
     public function bidErrors(Request $request)
     {
         $data = json_decode($request->getContent(), true);
@@ -182,7 +180,6 @@ class BidController extends Controller
         $bid_date = $data['bid_date'];
         $errors = [];
 
-        // Check if user_id has been inputted
         if(empty($user_id)) {
             $errors['user_id'] = 'Please provide a user_id.';
         }

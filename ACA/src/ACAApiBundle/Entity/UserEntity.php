@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class UserEntity
+class UserEntity extends ACABaseEntity
 {
     /**
      * @ORM\Id
@@ -37,7 +37,11 @@ class UserEntity
      */
     protected $role;
 
-  
+    /**
+     * @var array
+     */
+    protected $fields = array('id', 'email', 'first_name', 'last_name', 'role');
+
     /**
      * Get the value of Id
      *
@@ -51,7 +55,7 @@ class UserEntity
     /**
      * Set the value of Id
      *
-     * @param mixed id
+     * @param mixed $id
      *
      * @return self
      */
@@ -75,7 +79,7 @@ class UserEntity
     /**
      * Set the value of Email
      *
-     * @param mixed email
+     * @param mixed $email
      *
      * @return self
      */
@@ -99,7 +103,7 @@ class UserEntity
     /**
      * Set the value of First Name
      *
-     * @param mixed first_name
+     * @param mixed $first_name
      *
      * @return self
      */
@@ -123,7 +127,7 @@ class UserEntity
     /**
      * Set the value of Last Name
      *
-     * @param mixed last_name
+     * @param mixed $last_name
      *
      * @return self
      */
@@ -147,7 +151,7 @@ class UserEntity
     /**
      * Set the value of Role
      *
-     * @param mixed role
+     * @param mixed $role
      *
      * @return self
      */
