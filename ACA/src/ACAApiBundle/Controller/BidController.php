@@ -86,29 +86,29 @@ class BidController extends Controller
         if($errors) {
           $response->setStatusCode(400)->setData($errors);
           return $response;
-      }
+        }
 
-            $em = $this->getDoctrine()->getManager();
-            $bid = new BidEntity();
-            $bid->setData($data);
-            $em->persist($bid);
-            $em->flush();
+        $em = $this->getDoctrine()->getManager();
+        $bid = new BidEntity();
+        $bid->setData($data);
+        $em->persist($bid);
+        $em->flush();
 
-            $db = $this->get('db');
-            $response->setStatusCode(200)->setData(array(
-                'message' => 'Successfully posted new record',
-                'id' => $db->getLastInsertId()
-                )
-            );
+        $response->setStatusCode(200)->setData(array(
+            'message' => 'Successfully posted new record',
+            'id' => $bid->getId()
+            )
+        );
+
         return $response;
     }
 
 
     /**
+     * This action will update a particular bid already in the database.
      * @param $slug
      * @param Request $request
      * @return Response
-     * This action will update a particular bid already in the database.
      */
     public function putAction($slug, Request $request)
     {
@@ -119,21 +119,21 @@ class BidController extends Controller
       if($errors) {
         $response->setStatusCode(400)->setData($errors);
         return $response;
-    }
+      }
 
-          $em = $this->getDoctrine()->getManager();
-          $bid = $this->getDoctrine()
-              ->getRepository('ACAApiBundle:BidEntity')
-              ->find($slug);
-          $bid->setData($data);
-          $em->persist($bid);
-          $em->flush();
+      $em = $this->getDoctrine()->getManager();
+      $bid = $this->getDoctrine()
+          ->getRepository('ACAApiBundle:BidEntity')
+          ->find($slug);
+      $bid->setData($data);
+      $em->persist($bid);
+      $em->flush();
 
-          $db = $this->get('db');
-          $response->setStatusCode(200)->setData(array(
-              'message' => 'Successfully posted new record',
-              'id' => $db->getLastInsertId()
-              ));
+      $response->setStatusCode(200)->setData(array(
+          'message' => 'Successfully updated record',
+          'id' => $bid->getId()
+          )
+      );
       return $response;
     }
 
