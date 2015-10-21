@@ -51,14 +51,19 @@ class UserController extends Controller
      */
     public function showAction($slug)
     {
-        $data = $this->get('rest_service')->get('user', $slug);
-        if ($data) {
-            $response = new JsonResponse();
-            $response->setData($data);
-        } else {
-            $response = new Response;
-            $response->setStatusCode(500)->setContent('No record ' .$slug. ' found');
+        $response = new JsonResponse();
+        $user = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:UserEntity')
+            ->find($slug);
+
+        if(!$user) {
+            $response->setStatusCode(400)->setData(array(
+                'message' => 'No record found for id ' . $slug
+            ));
+            return $response;
         }
+
+        $response->setData($user->getData());
         return $response;
     }
 

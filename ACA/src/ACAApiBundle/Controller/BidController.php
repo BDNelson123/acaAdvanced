@@ -24,7 +24,6 @@ class BidController extends Controller
     public function getAction()
     {
         $response = new JsonResponse();
-
         $bids = $this->getDoctrine()
             ->getRepository('ACAApiBundle:BidEntity')
             ->findAll();
@@ -48,21 +47,20 @@ class BidController extends Controller
 
 
     /**
+     * Find and show a particular bid in the bid table, based on id (slug).
      * @param $slug
      * @return Response\JsonResponse
-     * This action will find a particular bid from the database.
      */
     public function showAction($slug)
     {
         $response = new JsonResponse();
-
         $bid = $this->getDoctrine()
             ->getRepository('ACAApiBundle:BidEntity')
             ->find($slug);
 
         if (!$bid) {
             $response->setStatusCode(400)->setData(array(
-              'message' => 'No record found'
+              'message' => 'No record found for id ' . $slug
             ));
             return $response;
         }
