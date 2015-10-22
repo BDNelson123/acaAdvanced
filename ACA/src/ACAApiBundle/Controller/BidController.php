@@ -19,7 +19,7 @@ class BidController extends Controller
 
     /**
      * Get all data for all bids in the bid table.
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function getAction()
     {
@@ -49,7 +49,7 @@ class BidController extends Controller
     /**
      * Find and show a particular bid in the bid table, based on id (slug).
      * @param $slug
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function showAction($slug)
     {
@@ -72,7 +72,7 @@ class BidController extends Controller
     /**
      * Add a bid to the bid table.
      * @param Request $request
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function postAction(Request $request)
     {
@@ -105,7 +105,7 @@ class BidController extends Controller
      * Update a particular bid in the bid table, based on id (slug).
      * @param $slug
      * @param Request $request
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function putAction($slug, Request $request)
     {
@@ -137,7 +137,7 @@ class BidController extends Controller
     /**
      * Delete a particular bid already in the bid table.
      * @param $slug
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function deleteAction($slug) {
         $response = new JsonResponse();

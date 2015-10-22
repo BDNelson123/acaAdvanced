@@ -70,7 +70,7 @@ class UserController extends Controller
     /**
      * Add a user to the user table.
      * @param Request $request
-     * @return Response\JsonResponse
+     * @return Response|JsonResponse
      */
     public function postAction(Request $request)
     {
@@ -102,7 +102,7 @@ class UserController extends Controller
      * Update a particular user in the user table, based on id (slug).
      * @param $slug
      * @param Request $request
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function putAction($slug, Request $request) {
         $response = new JsonResponse();
@@ -140,7 +140,7 @@ class UserController extends Controller
     /**
      * Delete a particular user already in the user table.
      * @param $slug
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function deleteAction($slug)
     {
