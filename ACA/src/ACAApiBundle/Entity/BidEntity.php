@@ -5,8 +5,8 @@ namespace ACAApiBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
  * @ORM\Table(name="bid")
+ * @ORM\Entity(repositoryClass="ACAApiBundle\Entity\BidRepository")
  */
 class BidEntity extends ACABaseEntity
 {

@@ -31,17 +31,25 @@ class BidController extends Controller
         if (!$bids) {
             $response->setStatusCode(400)
                 ->setData(array(
-                  'message' => 'Index request found no records'
+                    'message' => 'Index request found no records'
                 ));
             return $response;
         }
-
         $responseSetData = [];
         foreach($bids as $bid){
             $responseSetData[] = $bid->getData();
         }
 
-        $response->setData($responseSetData);
+        // At this point, $responseSetData is an array of bids and can be used with the paginator
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $responseSetData,
+            $this->get('request')->query->get('page', 1),
+            5
+        );
+        $items = $pagination->getItems();
+
+        $response->setData($items);
         return $response;
     }
 
