@@ -26,6 +26,9 @@ class UserController extends Controller
             ->getRepository('ACAApiBundle:UserEntity')
             ->findAll();
 
+        // responses per page (for pagination)
+        $rpp = 5;
+
         if(!$users) {
             $response->setStatusCode(400)
                 ->setData(array(
@@ -40,7 +43,16 @@ class UserController extends Controller
             $responseSetData[] = $user->getData();
         }
 
-        $response->setData($responseSetData);
+        // At this point, $responseSetData is an array of bids and can be used with the paginator
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $responseSetData,
+            $this->get('request')->query->get('page', 1),
+            $rpp
+        );
+        $items = $pagination->getItems();
+
+        $response->setData($items);
         return $response;
     }
 

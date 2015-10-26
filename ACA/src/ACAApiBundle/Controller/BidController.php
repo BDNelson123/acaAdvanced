@@ -28,6 +28,9 @@ class BidController extends Controller
             ->getRepository('ACAApiBundle:BidEntity')
             ->findAll();
 
+        // responses per page (for pagination)
+        $rpp = 5;
+
         if (!$bids) {
             $response->setStatusCode(400)
                 ->setData(array(
@@ -45,7 +48,7 @@ class BidController extends Controller
         $pagination = $paginator->paginate(
             $responseSetData,
             $this->get('request')->query->get('page', 1),
-            5
+            $rpp
         );
         $items = $pagination->getItems();
 
