@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package ACAApiBundle\Controller
  *
  */
-class HouseController extends Controller
+class HouseController extends ACABaseController
 {
 
       /**
@@ -24,41 +24,7 @@ class HouseController extends Controller
        */
       public function getAction()
       {
-          $response = new JsonResponse();
-          $houses = $this->getDoctrine()
-              ->getRepository('ACAApiBundle:HouseEntity')
-              ->findAll();
-
-          // responses per page (for pagination)
-          if(isset($_GET['rpp'])) {
-              $rpp = $_GET['rpp'];
-          } else {
-              $rpp = 5;
-          }
-
-          if (!$houses) {
-              $response->setStatusCode(400)
-                  ->setData(array(
-                    'message' => 'Index request found no records'
-                  ));
-              return $response;
-          }
-
-          $responseSetData = [];
-          foreach($houses as $house){
-              $responseSetData[] = $house->getData();
-          };
-
-          // At this point, $responseSetData is an array of bids and can be used with the paginator
-          $paginator  = $this->get('knp_paginator');
-          $pagination = $paginator->paginate(
-              $responseSetData,
-              $this->get('request')->query->get('page', 1),
-              $rpp
-          );
-          $items = $pagination->getItems();
-
-          $response->setData($items);
+          $response = $this->getPaginatedResults('House');
           return $response;
       }
 

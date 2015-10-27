@@ -1,7 +1,5 @@
 <?php
 
-# GET, PUT, SHOW, POST, DELETE
-
 namespace ACAApiBundle\Controller;
 
 use ACAApiBundle\Entity\BidEntity;
@@ -14,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class BidController
  * @package ACAApiBundle\Controller
  */
-class BidController extends Controller
+class BidController extends ACABaseController
 {
 
     /**
@@ -23,40 +21,7 @@ class BidController extends Controller
      */
     public function getAction()
     {
-        $response = new JsonResponse();
-        $bids = $this->getDoctrine()
-            ->getRepository('ACAApiBundle:BidEntity')
-            ->findAll();
-
-        // responses per page (for pagination)
-        if(isset($_GET['rpp'])) {
-            $rpp = $_GET['rpp'];
-        } else {
-            $rpp = 5;
-        }
-
-        if (!$bids) {
-            $response->setStatusCode(400)
-                ->setData(array(
-                    'message' => 'Index request found no records'
-                ));
-            return $response;
-        }
-        $responseSetData = [];
-        foreach($bids as $bid){
-            $responseSetData[] = $bid->getData();
-        }
-
-        // At this point, $responseSetData is an array of bids and can be used with the paginator
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $responseSetData,
-            $this->get('request')->query->get('page', 1),
-            $rpp
-        );
-        $paginated_bids = $pagination->getItems();
-
-        $response->setData($paginated_bids);
+        $response = $this->getPaginatedResults('Bid');
         return $response;
     }
 

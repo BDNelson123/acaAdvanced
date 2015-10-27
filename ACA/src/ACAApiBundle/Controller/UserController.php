@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package ACAApiBundle\Controller
  *
  */
-class UserController extends Controller
+class UserController extends ACABaseController
 {
     /**
      * Get all data for all users in the user table.
@@ -21,42 +21,7 @@ class UserController extends Controller
      */
     public function getAction()
     {
-        $response = new JsonResponse();
-        $users = $this->getDoctrine()
-            ->getRepository('ACAApiBundle:UserEntity')
-            ->findAll();
-
-        // responses per page (for pagination)
-        if(isset($_GET['rpp'])) {
-            $rpp = $_GET['rpp'];
-        } else {
-            $rpp = 5;
-        }
-
-        if(!$users) {
-            $response->setStatusCode(400)
-                ->setData(array(
-                    'message' => 'Index request found no records'
-                )
-            );
-            return $response;
-        }
-
-        $responseSetData = [];
-        foreach($users as $user) {
-            $responseSetData[] = $user->getData();
-        }
-
-        // At this point, $responseSetData is an array of bids and can be used with the paginator
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $responseSetData,
-            $this->get('request')->query->get('page', 1),
-            $rpp
-        );
-        $items = $pagination->getItems();
-
-        $response->setData($items);
+        $response = $this->getPaginatedResults('User');
         return $response;
     }
 
