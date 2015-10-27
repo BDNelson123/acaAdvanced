@@ -30,7 +30,11 @@ class HouseController extends Controller
               ->findAll();
 
           // responses per page (for pagination)
-          $rpp = 5;
+          if(isset($_GET['rpp'])) {
+              $rpp = $_GET['rpp'];
+          } else {
+              $rpp = 5;
+          }
 
           if (!$houses) {
               $response->setStatusCode(400)

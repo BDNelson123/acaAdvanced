@@ -27,7 +27,11 @@ class UserController extends Controller
             ->findAll();
 
         // responses per page (for pagination)
-        $rpp = 5;
+        if(isset($_GET['rpp'])) {
+            $rpp = $_GET['rpp'];
+        } else {
+            $rpp = 5;
+        }
 
         if(!$users) {
             $response->setStatusCode(400)

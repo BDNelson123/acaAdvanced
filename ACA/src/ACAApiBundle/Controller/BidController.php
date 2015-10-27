@@ -29,7 +29,11 @@ class BidController extends Controller
             ->findAll();
 
         // responses per page (for pagination)
-        $rpp = 5;
+        if(isset($_GET['rpp'])) {
+            $rpp = $_GET['rpp'];
+        } else {
+            $rpp = 5;
+        }
 
         if (!$bids) {
             $response->setStatusCode(400)
@@ -50,9 +54,9 @@ class BidController extends Controller
             $this->get('request')->query->get('page', 1),
             $rpp
         );
-        $items = $pagination->getItems();
+        $paginated_bids = $pagination->getItems();
 
-        $response->setData($items);
+        $response->setData($paginated_bids);
         return $response;
     }
 
