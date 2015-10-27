@@ -28,8 +28,9 @@ class UserValidator
             return 'Expected content type: application/json';
         }
 
-        // Require the following fields to exist and be fields
-        if (!is_string($data['email']) || !is_string($data['username']) || !is_string($data['password'])) {
+        // Require the following fields to exist and be strings
+        if (empty($data['email']) || empty($data['username']) || empty($data['password']) ||
+            !is_string($data['email']) || !is_string($data['username']) || !is_string($data['password'])) {
             return 'Missing required fields: "email", "username", "password"';
         }
 
