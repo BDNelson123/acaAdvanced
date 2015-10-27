@@ -32,19 +32,7 @@ class UserController extends ACABaseController
      */
     public function showAction($slug)
     {
-        $response = new JsonResponse();
-        $user = $this->getDoctrine()
-            ->getRepository('ACAApiBundle:UserEntity')
-            ->find($slug);
-
-        if(!$user) {
-            $response->setStatusCode(400)->setData(array(
-                'message' => 'No record found for id ' . $slug
-            ));
-            return $response;
-        }
-
-        $response->setData($user->getData());
+        $response = $this->showResult('User', $slug);
         return $response;
     }
 

@@ -36,20 +36,7 @@ class HouseController extends ACABaseController
        */
       public function showAction($slug)
       {
-          $response = new JsonResponse();
-
-          $house = $this->getDoctrine()
-              ->getRepository('ACAApiBundle:HouseEntity')
-              ->find($slug);
-
-          if (!$house) {
-              $response->setStatusCode(400)->setData(array(
-                'message' => 'No record found'
-              ));
-              return $response;
-          }
-
-          $response->setData($house->getData());
+          $response = $this->showResult('House', $slug);
           return $response;
       }
 

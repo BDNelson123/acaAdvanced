@@ -59,6 +59,24 @@ class ACABaseController extends Controller
         $response->setData($paginated_results);
         return $response;
     }
+
+    public function showResult($name, $slug)
+    {
+        $response = new JsonResponse();
+        $item = $this->getDoctrine()
+            ->getRepository('ACAApiBundle:' . $name . 'Entity')
+            ->find($slug);
+
+        if (!$item) {
+            $response->setStatusCode(400)->setData(array(
+                'message' => 'No record found for id ' . $slug
+            ));
+            return $response;
+        }
+
+        $response->setData($item->getData());
+        return $response;
+    }
 }
 
 

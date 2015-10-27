@@ -33,19 +33,7 @@ class BidController extends ACABaseController
      */
     public function showAction($slug)
     {
-        $response = new JsonResponse();
-        $bid = $this->getDoctrine()
-            ->getRepository('ACAApiBundle:BidEntity')
-            ->find($slug);
-
-        if (!$bid) {
-            $response->setStatusCode(400)->setData(array(
-              'message' => 'No record found for id ' . $slug
-            ));
-            return $response;
-        }
-
-        $response->setData($bid->getData());
+        $response = $this->showResult('Bid', $slug);
         return $response;
     }
 
