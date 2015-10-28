@@ -18,19 +18,19 @@ class Bid
     protected $id;
 
     /**
-     * @var $userid integer
+     * @var $user_id integer
      * @Assert\NotBlank()
      */
-    protected $userid;
+    protected $user_id;
 
     /**
-     * @var $houseid integer
+     * @var $house_id integer
      * @Assert\NotBlank()
      */
-    protected $houseid;
+    protected $house_id;
 
     /**
-     * @var $bidamount integer
+     * @var $bid_amount integer
      * @Assert\Range(
      *      min = 1000,
      *      max = 999999999,
@@ -38,13 +38,13 @@ class Bid
      *      maxMessage = "Please be realistic with your bid.",
      * )
      */
-    protected $bidamount;
+    protected $bid_amount;
 
     /**
-     * @var $biddate datetime
+     * @var $bid_date datetime
      * @Assert\DateTime()
      */
-    protected $biddate;
+    protected $bid_date;
 
     /**
      * @param $id
@@ -56,66 +56,68 @@ class Bid
     /**
      * @return mixed
      */
-    public function getUserId()
+    public function getuser_id()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
-     * @param mixed $userid
+     * @param mixed $user_id
      */
-    public function setUserId($userid)
+    public function setuser_id($user_id)
     {
-        $this->userid = $userid;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function gethouseid()
-    {
-        return $this->houseid;
-    }
-
-    /**
-     * @param mixed $houseid
-     */
-    public function setHouseId($houseid)
-    {
-        $this->houseid = $houseid;
+        $this->user_id = $user_id;
     }
 
     /**
      * @return mixed
      */
-    public function getBidAmount()
+    public function gethouse_id()
     {
-        return $this->bidamount;
+        return $this->house_id;
     }
 
     /**
-     * @param mixed $bidamount
+     * @param mixed $house_id
      */
-    public function setBidAmount($bidamount)
+    public function sethouse_id($house_id)
     {
-        $this->bidamount = $bidamount;
+        $this->house_id = $house_id;
     }
 
     /**
      * @return mixed
      */
-    public function getBidDate()
+    public function getbid_amount()
     {
-        return $this->biddate;
+        return $this->bid_amount;
     }
 
     /**
-     * @param mixed $biddate
+     * @param mixed $bid_amount
      */
-    public function setBidDate($biddate)
+    public function setbid_amount($bid_amount)
     {
-        $this->biddate = $biddate;
+        $this->bid_amount = $bid_amount;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getbid_date()
+    {
+        return $this->bid_date;
+    }
+
+    /**
+     * @param mixed $bid_date
+     */
+    public function setbid_date($bid_date)
+    {
+        $this->bid_date = $bid_date;
+    }
+
+
 
     /**
      * Validates a Bid with all required fields
@@ -126,12 +128,12 @@ class Bid
         $data = Bid::getDataFromRequest($request);
 
         // If it's missing needed fields ...
-        if (empty($data['userid']) || empty($data['houseid']) || empty($data['bidamount'])) {
+        if (empty($data['user_id']) || empty($data['house_id']) || empty($data['bid_amount'])) {
             return false;
         }
 
         // Make sure the bid amount is something within a realistic range.
-        if ($data['bidamount'] < 1000 || $data['bidamount'] > 999999999) {
+        if ($data['bid_amount'] < 1000 || $data['bid_amount'] > 999999999) {
             return false;
         }
 
@@ -147,8 +149,8 @@ class Bid
         $data = Bid::getDataFromRequest($request);
 
         // If it's missing needed fields ...
-        if (empty($data['userid']) && empty($data['houseid']) &&
-            empty($data['bidamount'])) {
+        if (empty($data['user_id']) && empty($data['house_id']) &&
+            empty($data['bid_amount'])) {
             return false;
         }
 

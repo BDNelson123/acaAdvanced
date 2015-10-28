@@ -151,4 +151,11 @@ class DBCommon
     public function getSqlstate() {
         return $this->mysqli->sqlstate;
     }
+
+    /**
+     * @return string
+     */
+    public function getErrorString() {
+        return $this->mysqli->error;
+    }
 }
