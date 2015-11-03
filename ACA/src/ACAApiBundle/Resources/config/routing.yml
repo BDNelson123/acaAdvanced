@@ -90,3 +90,34 @@ route_delete_bid:
     defaults: { _controller: ACAApiBundle:Bid:delete, slug: null }
     requirements:
         _method: 'DELETE'
+
+## house_image ROUTING
+route_get_house_image:
+    path:     /house_image
+    defaults: { _controller: ACAApiBundle:HouseImage:get }
+    requirements:
+        _method: 'GET'
+
+route_post_house_image:
+    path:     /house_image
+    defaults: { _controller: ACAApiBundle:HouseImage:post }
+    requirements:
+        _method: 'POST'
+
+route_show_house_image:
+    path:     /house_image/{slug}
+    defaults: { _controller: ACAApiBundle:HouseImage:show, slug: null }
+    requirements:
+        _method: 'GET'
+
+route_put_house_image:
+    path:     /house_image/{slug}
+    defaults: { _controller: ACAApiBundle:HouseImage:put, slug: null }
+    requirements:
+        _method: 'PUT'
+
+route_delete_house_image:
+    path:     /house_image/{slug}
+    defaults: { _controller: ACAApiBundle:HouseImage:delete, slug: null }
+    requirements:
+        _method: 'DELETE'
