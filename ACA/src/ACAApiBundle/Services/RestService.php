@@ -46,7 +46,7 @@ class RestService {
                 return false;
             }
         } else {
-            $this->db->setQuery('SELECT * FROM ' .$tableName. ' WHERE id = ' . $id . ';');
+            $this->db->setQuery('SELECT * FROM ' .$tableName. ' WHERE id = ' . $this->sanitize($id) . ';');
             $this->db->query();
             if ($this->db->getSqlstate() === '00000') {
                 return $this->db->loadObject();
@@ -67,13 +67,13 @@ class RestService {
         $query = 'INSERT INTO ' . $tableName . '(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= str_replace(array(',','\\',';'), '', $fieldname) .',';
+            $query .= $this->sanitize($fieldname) .',';
         }
         $query = rtrim($query, ',');
         $query .= ') values(';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .= '"' . str_replace(array(',','\\',';'), '', $fieldvalue) .'",';
+            $query .= '"' . $this->sanitize($fieldvalue) .'",';
         }
         $query = rtrim($query, ',');
         $query .= ');';
@@ -102,7 +102,7 @@ class RestService {
         $query = 'UPDATE ' . $tableName . ' SET ';
         foreach ($data as $fieldname => $fieldvalue)
         {
-            $query .=  str_replace(array(',','\\',';'), '', $fieldname) .'="'. str_replace(array(',','\\',';'), '', $fieldvalue) . '",';
+            $query .=  $this->sanitize($fieldname) .'="'. $this->sanitize($fieldvalue) . '",';
         }
         $query = rtrim($query, ',');
         $query .= ' WHERE id=' . $recordId .';';
@@ -126,7 +126,7 @@ class RestService {
      * @return bool
      */
     public function delete($tableName, $recordId) {
-        $this->db->setQuery('DELETE FROM ' .$tableName. ' WHERE id=' .$recordId. ';');
+        $this->db->setQuery('DELETE FROM ' .$tableName. ' WHERE id=' .$this->sanitize($recordId). ';');
         $this->db->query();
 
         // If the query was successful, return true
@@ -135,5 +135,13 @@ class RestService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    private function sanitize($string) {
+        return str_replace(array('*',',','\\',';'), '', $string);
     }
 }

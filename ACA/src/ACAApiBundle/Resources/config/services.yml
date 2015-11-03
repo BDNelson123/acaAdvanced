@@ -7,3 +7,18 @@ services:
     class: ACAApiBundle\Services\RestService
     calls:
       - [setDb, ["@db"]]
+
+  auth_service:
+    class:  ACAApiBundle\Services\AuthService
+    calls:
+      - [setDb, ["@db"]]
+
+  login_service:
+    class:  ACAApiBundle\Services\LoginService
+    calls:
+      - [setDb, ["@db"]]
+
+  user_validator:
+    class:  ACAApiBundle\Services\Validation\UserValidator
+    calls:
+      - [setDb, ["@db"]]
